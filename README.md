@@ -1,5 +1,11 @@
 # SSR Editor
 
-Starter project for DV1677 JSRamverk
+_Starter project for DV1677 JSRamverk_
 
-Authors August Levinson & Calle Andersson
+_Authors August Levinson & Calle Andersson_
+
+
+Framework
+---
+
+In this project we have decided to choose React as our frontend framework.
