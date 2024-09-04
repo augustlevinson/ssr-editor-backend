@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
@@ -13,13 +14,27 @@ html {
 
 body {
     line-height: 1.4;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Roboto Condensed", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: #8656B6;
+}
+
+h1, h2, p, label {
+    color: #FFF;
+}
+
+a {
+    color: #FFF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #b888e8;
 }
 
 h1 {
@@ -37,14 +52,8 @@ p {
 }
 
 header {
-    background-color: #0074D9;
-    color: #fff;
+    background-color: #63299F;
     padding: 1.4rem 3rem;
-
-    & a {
-        text-decoration: none;
-        color: #fff
-    }
 }
 
 main {
@@ -59,11 +68,33 @@ main {
     flex-direction: column;
 }
 
+.add-doc {
+    display: inline-block;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    color: #63299F;
+    background-color: #FFF;
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+}
+
 input,
 textarea {
     margin-bottom: 1.4rem;
     font-size: 1rem;
-    padding: 1.4rem;
+    padding: 1.2rem;
+    border-radius: 0.5em;
+    border: solid 1px #919191;
+    background-color: #eae0f5;
+}
+
+textarea {
+    min-height: 300px;
+}
+
+.submit-button {
+    width: fit-content;
+    min-width: 200px;
 }
 
 footer {

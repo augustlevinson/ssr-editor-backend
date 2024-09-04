@@ -3,5 +3,5 @@
     <% docs.forEach(function(doc){ %>
         <h3><a href="/docs/<%= doc.id %>"><%= doc.title %></a></h3>
     <% }); %>
-    <a href="/add">Skapa nytt dokument</a>
+    <a class="add-doc" href="/add">Skapa nytt dokument</a>
 <%- include('includes/footer'); %>
