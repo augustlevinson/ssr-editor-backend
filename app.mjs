@@ -36,13 +36,10 @@ app.post("/", async (req, res) => {
 app.post("/edit", async (req, res) => {
     const result = await documents.editOne(req.body);
 
-    console.log(`LOG::::${req.body.id}`)
-
     return res.redirect(`/docs/${req.body.id}`);
 });
 
 app.get('/docs/:id', async (req, res) => {
-    console.log(req.params)
     return res.render(
         "doc",
         { doc: await documents.getOne(req.params.id) }
