@@ -47,8 +47,6 @@ const docs = {
 
     editOne: async function editOne(body) {
         let db = await openDb();
-        console.log(body)
-        console.log(body.rowid)
 
         try {
             return await db.run(
