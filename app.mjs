@@ -30,10 +30,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/", async (req, res) => {
     const result = await documents.addOne(req.body);
 
-    return res.redirect(`/${result.lastID}`);
+    return res.redirect(`/docs/${result.lastID}`);
 });
 
-app.get('/:id', async (req, res) => {
+app.post("/edit", async (req, res) => {
+    const result = await documents.editOne(req.body);
+
+    console.log(`LOG::::${req.body.id}`)
+
+    return res.redirect(`/docs/${req.body.id}`);
+});
+
+app.get('/docs/:id', async (req, res) => {
+    console.log(req.params)
     return res.render(
         "doc",
         { doc: await documents.getOne(req.params.id) }
@@ -42,6 +51,10 @@ app.get('/:id', async (req, res) => {
 
 app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
+});
+
+app.get('/add', async (req, res) => {
+    return res.render("add");
 });
 
 app.listen(port, () => {
