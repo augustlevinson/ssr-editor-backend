@@ -43,6 +43,22 @@ const docs = {
         } finally {
             await db.close();
         }
+    },
+
+    editOne: async function editOne(id) {
+        let db = await openDb();
+
+        try {
+            return await db.run(
+                `UPDATE documents (title, content) VALUES (?, ?) WHERE rowid = ${id}`,
+                body.title,
+                body.content,
+            );
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.close();
+        }
     }
 };
 
