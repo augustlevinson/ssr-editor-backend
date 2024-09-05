@@ -54,6 +54,7 @@ p {
 header {
     background-color: #63299F;
     padding: 1.4rem 3rem;
+    border-bottom: solid 4px #b888e8;
 }
 
 main {
@@ -98,8 +99,9 @@ textarea {
 }
 
 footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #BEA0DD;
     padding: 1.4rem 8rem;
-    flex-shrink: 0;
+    a, p {
+    color: #212121;
+    }
 }
