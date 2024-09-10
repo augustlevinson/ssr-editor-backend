@@ -5,7 +5,7 @@
 
 // MongoDB
 const mongo = require("mongodb").MongoClient;
-const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/mumin";
+const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/docs";
 
 // Express server
 const port = process.env.DBWEBB_PORT || 1337;
@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 // Return a JSON object with list of all documents within the collection.
 app.get("/list", async (request, response) => {
     try {
-        let res = await findInCollection(dsn, "crowd", {}, {}, 0);
+        let res = await findInCollection(dsn, "entries", {}, {}, 0);
 
         console.log(res);
         response.json(res);

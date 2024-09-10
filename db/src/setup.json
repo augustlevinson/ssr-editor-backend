@@ -1,18 +1,18 @@
 [
     {
-        "namn": "Mumintrollet",
-        "bor": "Mumindalen"
+        "title": "Hemligt dokument 1",
+        "content": "Det här är ett hemligt dokument som bara vi får läsa."
     },
     {
-        "namn": "Sniff",
-        "bor": "Mumindalen"
+        "title": "Glass",
+        "content": "Glass är gott."
     },
     {
-        "namn": "Snusmumriken",
-        "bor": "Mumindalen"
+        "title": "Läsken för mig",
+        "content": "Champis kanske är favoriten. Men Coca-Cola är också svårslaget."
     },
     {
-        "namn": "Snorkfröken",
-        "bor": "Mumindalen"
+        "title": "Vinnare av SHL 24-25",
+        "content": "Brynäs!"
     }
 ]
