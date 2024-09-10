@@ -1,5 +1,5 @@
 /**
- * Connect to the database and setup it with some default data.
+ * Connect to the database and set it up with some default data.
  */
 "use strict";
 

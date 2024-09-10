@@ -19,5 +19,8 @@
     "morgan": "^1.10.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4"
   }
 }
