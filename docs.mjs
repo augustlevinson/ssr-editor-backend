@@ -5,17 +5,17 @@ const docs = {
         let db = await getDb();
 
         try {
-            console.log(await db.collection.find({}).toArray());
             return await db.collection.find({}).toArray();
         } catch (e) {
             console.error(e);
 
-            //     return [];
-            // } finally {
-            //     await db.close();
+                return [];
+            } finally {
+                await db.client.close();
         }
     },
 
+    // Fixa allt nedan
     getOne: async function getOne(id) {
         let db = await getDb();
 
