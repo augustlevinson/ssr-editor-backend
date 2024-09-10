@@ -46,6 +46,10 @@ app.get('/docs/:id', async (req, res) => {
     );
 });
 
+app.get('/search/:string', async (req, res) => {
+    console.log(req.params.string);
+});
+
 app.get('/', async (req, res) => {
     return res.render("index", { docs: await documents.getAll() });
 });

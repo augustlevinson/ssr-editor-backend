@@ -1,18 +1,24 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { MongoClient as mongo } from "mongodb";
+const colName = "entries";
 
-async function openDb() {
-    let dbFilename = `./db/docs.sqlite`;
-
+async function getDb () {
+    let dsn = `mongodb://localhost:27017/docs`;
+    
     if (process.env.NODE_ENV === 'test') {
-        dbFilename = "./db/test.sqlite";
+        dsn = "mongodb://localhost:27017/test";
     }
-
-    return await open({
-        filename: dbFilename,
-        driver: sqlite3.Database
+    
+    const client  = await mongo.connect(dsn, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
     });
+    const db = await client.db();
+    const collection = await db.collection(colName);
+
+    return {
+        collection: collection,
+        client: client,
+    };
 }
 
-
-export default openDb;
+export default getDb;
