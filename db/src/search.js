@@ -4,26 +4,26 @@
 "use strict";
 
 const mongo = require("mongodb").MongoClient;
-const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/mumin";
+const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/docs";
 
 // Find documents for this living in...
 const criteria1 = {
-    bor: "Mumindalen"
+    title: "Glass"
 };
 const projection1 = {
-    namn: 1,
-    bor: 1,
+    title: 1,
+    content: 1,
     _id: 0
 };
 const limit1 = 3;
 
-// Find documents where namn starts with string
+// Find documents where title starts with string
 const criteria2 = {
-    namn: /^Sn/
+    title: /^Sn/
 };
 const projection2 = {
     _id: 1,
-    namn: 1
+    title: 1
 };
 const limit2 = 3;
 
@@ -33,14 +33,14 @@ const limit2 = 3;
 // This is to enable usage of await within the function scope.
 (async () => {
     // Find using .then()
-    findInCollection(dsn, "crowd", criteria1, projection1, limit1)
+    findInCollection(dsn, "entries", criteria1, projection1, limit1)
         .then(res => console.log(res))
         .catch(err => console.log(err));
 
     // Find using await
     try {
         let res = await findInCollection(
-            dsn, "crowd", criteria2, projection2, limit2
+            dsn, "entries", criteria2, projection2, limit2
         );
 
         console.log(res);

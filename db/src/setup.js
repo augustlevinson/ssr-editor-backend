@@ -4,7 +4,7 @@
 "use strict";
 
 const mongo = require("mongodb").MongoClient;
-const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/mumin";
+const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/docs";
 
 const fs = require("fs");
 const path = require("path");
@@ -16,7 +16,7 @@ const docs = JSON.parse(fs.readFileSync(
 
 
 // Do it.
-resetCollection(dsn, "crowd", docs)
+resetCollection(dsn, "entries", docs)
     .catch(err => console.log(err));
 
 
