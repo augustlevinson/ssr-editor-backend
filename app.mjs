@@ -28,9 +28,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/", async (req, res) => {
-    const result = await documents.addOne(req.body);
+    await documents.addOne(req.body);
 
-    return res.redirect(`/docs/${result.lastID}`);
+    return res.redirect(`/`);
 });
 
 app.post("/edit", async (req, res) => {

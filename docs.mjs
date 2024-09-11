@@ -35,15 +35,16 @@ const docs = {
         let db = await getDb();
 
         try {
-            return await db.run(
-                "INSERT INTO documents (title, content) VALUES (?, ?)",
-                body.title,
-                body.content
+            return await db.collection.insertOne({
+                title: body.title,
+                content: body.content,
+                created: new Date().toLocaleString()
+            }
             );
         } catch (e) {
             console.error(e);
         } finally {
-            await db.close();
+            await db.client.close();
         }
     },
 
