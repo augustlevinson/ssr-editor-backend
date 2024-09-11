@@ -48,4 +48,4 @@ async function resetCollection(dsn, colName, doc) {
     await col.insertMany(doc);
 
     await client.close();
-}
+};
