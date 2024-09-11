@@ -50,7 +50,6 @@ const docs = {
 
     editOne: async function editOne(body) {
         let db = await getDb();
-        console.log(body.id)
 
         const filter = { _id: new ObjectId(`${body.id}`) };
         const updatedContent = {
@@ -63,6 +62,22 @@ const docs = {
             return await db.collection.updateOne(
                 filter,
                 { $set: updatedContent }
+            );
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    deleteOne: async function deleteOne(id) {
+        let db = await getDb();
+
+        const filter = { _id: new ObjectId(`${id}`) };
+
+        try {
+            return await db.collection.deleteOne(
+                filter
             );
         } catch (e) {
             console.error(e);

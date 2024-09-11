@@ -58,6 +58,19 @@ app.get('/add', async (req, res) => {
     return res.render("add");
 });
 
+app.get('/delete/:id', async (req, res) => {
+    return res.render(
+        "delete",
+        { doc: await documents.getOne(req.params.id) }
+    );
+});
+
+app.post("/delete", async (req, res) => {
+    await documents.deleteOne(req.body.id);
+
+    return res.redirect(`/`);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
 });
