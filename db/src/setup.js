@@ -8,12 +8,16 @@ const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/docs";
 
 const fs = require("fs");
 const path = require("path");
-const docs = JSON.parse(fs.readFileSync(
+let docs = JSON.parse(fs.readFileSync(
     path.resolve(__dirname, "setup.json"),
     "utf8"
 ));
 
-
+// Append "created": new Date() to each object
+docs = docs.map(doc => ({
+    ...doc,
+    created: new Date().toLocaleString()
+}));
 
 // Do it.
 resetCollection(dsn, "entries", docs)
