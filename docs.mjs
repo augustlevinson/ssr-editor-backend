@@ -50,17 +50,24 @@ const docs = {
 
     editOne: async function editOne(body) {
         let db = await getDb();
+        console.log(body.id)
+
+        const filter = { _id: new ObjectId(`${body.id}`) };
+        const updatedContent = {
+            title: body.title,
+            content: body.content,
+            updated: new Date().toLocaleString()
+        };
 
         try {
-            return await db.run(
-                `UPDATE documents SET title = ?, content = ? WHERE rowid = ${body.id}`,
-                body.title,
-                body.content
+            return await db.collection.updateOne(
+                filter,
+                { $set: updatedContent }
             );
         } catch (e) {
             console.error(e);
         } finally {
-            await db.close();
+            await db.client.close();
         }
     },
 };
