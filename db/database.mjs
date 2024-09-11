@@ -9,8 +9,8 @@ async function getDb () {
     }
     
     const client  = await mongo.connect(dsn);
-    const db = await client.db();
-    const collection = await db.collection(colName);
+    const db = client.db();
+    const collection = db.collection(colName);
 
     return {
         collection: collection,

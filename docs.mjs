@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import getDb from "./db/database.mjs";
 
 const docs = {
@@ -18,15 +19,15 @@ const docs = {
     // Fixa allt nedan
     getOne: async function getOne(id) {
         let db = await getDb();
-
+        // console.log(new ObjectId(`${id}`).toString().slice(-6))
         try {
-            return await db.get("SELECT *, rowid AS id FROM documents WHERE rowid=?", id);
+            return await db.collection.findOne({_id: new ObjectId(`${id}`)})
         } catch (e) {
             console.error(e);
 
             return {};
         } finally {
-            await db.close();
+            await db.client.close();
         }
     },
 
