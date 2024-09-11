@@ -85,6 +85,39 @@ const docs = {
             await db.client.close();
         }
     },
+
+    resetDb: async function resetDb() {
+        let db = await getDb();
+
+        let setupContent = [
+            {
+                "title": "Hemligt dokument 1",
+                "content": "Det här är ett hemligt dokument som bara vi får läsa."
+            },
+            {
+                "title": "Glass",
+                "content": "Glass är gott."
+            },
+            {
+                "title": "Läsken för mig",
+                "content": "Champis kanske är favoriten. Men Coca-Cola är också svårslaget."
+            },
+            {
+                "title": "Vinnare av SHL 24-25",
+                "content": "Brynäs!"
+            }
+        ]
+
+        setupContent = setupContent.map(doc => ({
+            ...doc,
+            created: new Date().toLocaleString()
+        }));
+
+        await db.collection.deleteMany();
+        await db.collection.insertMany(setupContent);
+
+        await db.client.close();
+    }
 };
 
 export default docs;
