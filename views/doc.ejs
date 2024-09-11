@@ -7,7 +7,10 @@
         <label for="content">Innehåll</label>
         <textarea name="content"><%= doc.content %></textarea>
         <input type="hidden" value="<%= doc._id %>" name="id" />
-
         <input type="submit" value="Spara" class="submit-button" />
+    </form>
+    <form method="POST" action="/delete" class="delete-doc">
+        <input type="hidden" value="<%= doc._id %>" name="id" />
+        <input type="submit" value="Radera" class="submit-button red" />
     </form>
 <%- include('includes/footer'); %>

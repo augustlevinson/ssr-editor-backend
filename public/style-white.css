@@ -95,6 +95,10 @@ main {
     color: #fff;
 }
 
+.delete-doc {
+    color: #b43030
+}
+
 input,
 textarea {
     margin-bottom: 1.4rem;
@@ -112,6 +116,10 @@ textarea {
 .submit-button {
     width: fit-content;
     min-width: 200px;
+}
+
+.red {
+    background-color: #b43030;
 }
 
 footer {

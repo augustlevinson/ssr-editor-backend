@@ -2,7 +2,10 @@
     <h1>Dokument</h1>
     <% docs.forEach(function(doc){ %>
         <!-- <h3><a href="/docs/<%= String(doc._id).slice(-6) %>"><%= doc.title %></a></h3> -->
-        <h3><a href="/docs/<%= doc._id %>"><%= doc.title %></a></h3>
+        <h3>
+            <a href="/docs/<%= doc._id %>"><%= doc.title %></a>
+            <a href="/delete/<%= doc._id %>" class="delete-doc">X</a>
+        </h3>
     <% }); %>
     <a class="add-doc" href="/add">Skapa nytt dokument</a>
 <%- include('includes/footer'); %>
