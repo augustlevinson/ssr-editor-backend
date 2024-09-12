@@ -40,10 +40,7 @@ app.post("/edit", async (req, res) => {
 });
 
 app.get('/docs/:id', async (req, res) => {
-    return res.render(
-        "doc",
-        { doc: await documents.getOne(req.params.id) }
-    );
+    return res.json({doc: await documents.getOne(req.params.id)});
 });
 
 app.get('/search/:string', async (req, res) => {
@@ -51,7 +48,7 @@ app.get('/search/:string', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-    return res.render("index", { docs: await documents.getAll() });
+    return res.json({docs: await documents.getAll()});
 });
 
 app.get('/add', async (req, res) => {
