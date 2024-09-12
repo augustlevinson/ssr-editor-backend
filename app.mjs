@@ -34,7 +34,7 @@ app.post("/", async (req, res) => {
 });
 
 app.post("/edit", async (req, res) => {
-    const result = await documents.editOne(req.body);
+    await documents.editOne(req.body);
 
     return res.redirect(`/docs/${req.body.id}`);
 });
