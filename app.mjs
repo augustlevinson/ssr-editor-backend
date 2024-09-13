@@ -12,6 +12,8 @@ import documents from "./docs.mjs";
 
 const app = express();
 
+app.use(cors());
+
 app.disable('x-powered-by');
 
 app.set("view engine", "ejs");
