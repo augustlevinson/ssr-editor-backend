@@ -68,8 +68,8 @@ app.get("/reset", async (req, res) => {
     return res.redirect(`/`);
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`)
+const server = app.listen(port, () => {
+    console.log(`SSR Editor running port ${port}`)
 });
 
-module.exports = app;
+module.exports = { app, server };
