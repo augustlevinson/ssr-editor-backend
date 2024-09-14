@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
-import getDb from "./db/database.mjs";
+const { ObjectId } = require("mongodb");
+const getDb = require("./db/database.js");
 
 const docs = {
     getAll: async function getAll() {
@@ -120,4 +120,4 @@ const docs = {
     }
 };
 
-export default docs;
+module.exports = docs;

@@ -1,14 +1,14 @@
-import 'dotenv/config'
+require('dotenv/config');
 
 const port = process.env.PORT || 1337;
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import path from 'path';
-import morgan from 'morgan';
-import cors from 'cors';
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const morgan = require('morgan');
+const cors = require('cors');
 
-import documents from "./docs.mjs";
+const documents = require('./docs.js');
 
 const app = express();
 
@@ -68,6 +68,8 @@ app.get("/reset", async (req, res) => {
     return res.redirect(`/`);
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`)
+const server = app.listen(port, () => {
+    console.log(`SSR Editor running port ${port}`)
 });
+
+module.exports = { app, server };
