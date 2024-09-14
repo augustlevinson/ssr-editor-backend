@@ -1,14 +1,14 @@
-import { MongoClient as mongo } from "mongodb";
+const { MongoClient: mongo } = require("mongodb");
 const colName = "entries";
 
-async function getDb () {
+async function getDb() {
     let dsn = `mongodb://localhost:27017/docs`;
-    
+
     if (process.env.NODE_ENV === 'test') {
         dsn = "mongodb://localhost:27017/test";
     }
-    
-    const client  = await mongo.connect(dsn);
+
+    const client = await mongo.connect(dsn);
     const db = client.db();
     const collection = db.collection(colName);
 
@@ -18,4 +18,4 @@ async function getDb () {
     };
 }
 
-export default getDb;
+module.exports = getDb;

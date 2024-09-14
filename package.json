@@ -1,11 +1,11 @@
 {
   "name": "ssr-editor",
   "version": "1.0.0",
-  "description": "Starter project for DV1677 JSRamverk",
-  "main": "index.js",
+  "description": "Backend for SSR Editor",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.mjs"
+    "test": "jest",
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +16,13 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mongodb": "^6.8.1",
-    "morgan": "^1.10.0",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@types/node": "^22.5.4"
+    "@types/jest": "^29.5.13",
+    "@types/node": "^22.5.4",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
