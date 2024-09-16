@@ -1,6 +1,8 @@
 const { ObjectId } = require("mongodb");
 const getDb = require("./db/database.js");
 
+let setupContent = require('./setupContent.json');
+
 const docs = {
     getAll: async function getAll() {
         let db = await getDb();
@@ -97,25 +99,6 @@ const docs = {
 
     resetDb: async function resetDb() {
         let db = await getDb();
-
-        let setupContent = [
-            {
-                "title": "Hemligt dokument 1",
-                "content": "Det här är ett hemligt dokument som bara vi får läsa."
-            },
-            {
-                "title": "Glass",
-                "content": "Glass är gott."
-            },
-            {
-                "title": "Läsken för mig",
-                "content": "Champis kanske är favoriten. Men Coca-Cola är också svårslaget."
-            },
-            {
-                "title": "Vinnare av SHL 24-25",
-                "content": "Brynäs!"
-            }
-        ]
 
         setupContent = setupContent.map(doc => ({
             ...doc,
