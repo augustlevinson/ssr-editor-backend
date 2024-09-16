@@ -31,13 +31,13 @@ const docs = {
         }
     },
 
-    addOne: async function addOne(body) {
+    addOne: async function addOne(addTitle, addContent) {
         let db = await getDb();
 
         try {
             return await db.collection.insertOne({
-                title: body.title,
-                content: body.content,
+                title: addTitle,
+                content: addContent,
                 created: new Date().toLocaleString()
             }
             );
