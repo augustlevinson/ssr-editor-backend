@@ -21,7 +21,7 @@ const docs = {
         let db = await getDb();
         // console.log(new ObjectId(`${id}`).toString().slice(-6))
         try {
-            return await db.collection.findOne({_id: new ObjectId(`${id}`)})
+            return await db.collection.findOne({doc_id: id})
         } catch (e) {
             console.error(e);
 
@@ -33,13 +33,22 @@ const docs = {
 
     addOne: async function addOne(addTitle, addContent) {
         let db = await getDb();
-
+        let addCreated = new Date().toLocaleString()
         try {
-            return await db.collection.insertOne({
+            await db.collection.insertOne({
                 title: addTitle,
                 content: addContent,
-                created: new Date().toLocaleString()
-            }
+                created: addCreated
+            });
+            const addDoc = await db.collection.findOne({created: addCreated})
+            const filter = { _id: new ObjectId(`${addDoc._id}`) };
+            const updatedContent = {
+                ...addDoc,
+                doc_id: filter._id.toString().slice(-6)
+            };
+            await db.collection.updateOne(
+                filter,
+                { $set: updatedContent }
             );
         } catch (e) {
             console.error(e);
@@ -115,6 +124,19 @@ const docs = {
 
         await db.collection.deleteMany();
         await db.collection.insertMany(setupContent);
+
+        const content = await db.collection.find({}).toArray();
+        for (const doc in content) {
+            const filter = { _id: new ObjectId(`${content[doc]._id}`) };
+            const updatedContent = {
+                ...content[doc],
+                doc_id: filter._id.toString().slice(-6)
+            };
+            await db.collection.updateOne(
+                filter,
+                { $set: updatedContent }
+            );
+        }
 
         await db.client.close();
     }
