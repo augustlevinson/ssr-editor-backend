@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const getDb = require("./db/database.js");
 
-let setupContent = require('./setupContent.json');
+let setupContent = require('./db/setupContent.json');
 
 const docs = {
     getAll: async function getAll() {
