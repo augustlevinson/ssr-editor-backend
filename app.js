@@ -29,9 +29,21 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/", async (req, res) => {
-    await documents.addOne(req.body);
-
+// behövs redirect eller kan vi lösa på annat sätt?
+app.get('/add/:title?/:content?', async (req, res) => {
+    // det här funkar, men finns en bugg som borde lösas
+    // när vi kopplar till frontenden
+    const title = req.params.title;
+    const content = req.params.content;
+    
+    // if title and content are given, use values
+    if (title && content) {
+        await documents.addOne(title, content);
+    }
+    
+    if (!(title && content)) {
+        await documents.addOne("Titel", "")
+    }
     return res.redirect(`/`);
 });
 
@@ -51,10 +63,6 @@ app.get('/search/:string', async (req, res) => {
 
 app.get('/', async (req, res) => {
     return res.json({docs: await documents.getAll()});
-});
-
-app.get('/add', async (req, res) => {
-    return res.render("add");
 });
 
 app.post("/delete", async (req, res) => {
