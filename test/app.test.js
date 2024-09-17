@@ -38,6 +38,11 @@ describe('API Endpoints', () => {
             expect(res.body).toHaveProperty('doc');
             expect(res.body.doc).toEqual(null);
         });
+        it('/docs/fail    should only have property `doc`', async () => {
+            const id = new ObjectId().toString().slice(-6)
+            const res = await request(app).get(`/docs/${id}`);
+            expect(res.body).toHaveProperty('körv');
+        });
 
         it('/docs/<testId>             should have properties `title` and `content`', async () => {
             const res = await request(app).get(`/docs/${testId}`);
