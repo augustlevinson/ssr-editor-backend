@@ -18,10 +18,8 @@ const docs = {
         }
     },
 
-    // Fixa allt nedan
     getOne: async function getOne(id) {
         let db = await getDb();
-        // console.log(new ObjectId(`${id}`).toString().slice(-6))
         try {
             return await db.collection.findOne({doc_id: id})
         } catch (e) {

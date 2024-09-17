@@ -29,14 +29,10 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// behövs redirect eller kan vi lösa på annat sätt?
 app.get('/add/:title?/:content?', async (req, res) => {
-    // det här funkar, men finns en bugg som borde lösas
-    // när vi kopplar till frontenden
     const title = req.params.title;
     const content = req.params.content;
     
-    // if title and content are given, use values
     if (title && content) {
         await documents.addOne(title, content);
     }

@@ -10,7 +10,7 @@ let testId;
 beforeAll(async () => {
     await request(app).get('/reset');
     db = await request(app).get('/');
-    testId = db._body.docs[1]._id;
+    testId = db._body.docs[1].doc_id;
 });
 
 
@@ -32,8 +32,8 @@ describe('API Endpoints', () => {
     });
     describe('GET /docs/', () => {
         it('/docs/<non-existing-id>    should only have property `doc`', async () => {
-            //genererar ett nytt objectId varje gång test körs.
-            const res = await request(app).get(`/docs/${new ObjectId()}`);
+            const id = new ObjectId().toString().slice(-6)
+            const res = await request(app).get(`/docs/${id}`);
             expect(res.statusCode).toEqual(200);
             expect(res.body).toHaveProperty('doc');
             expect(res.body.doc).toEqual(null);
@@ -61,29 +61,27 @@ describe('API Endpoints', () => {
             expect(resAfter.body.docs[4].title).toEqual('Titel');
             expect(resAfter.body.docs[4].content).toEqual('');
             expect(resAfter.body.docs[4].created).toBeDefined();
-
+            
+            await request(app).get('/reset'); 
         });
 
         it('/add/<title>/<content>     should add new doc with given values', async () => {
-            // nu ligger föregående testdokument kvar i databasen, vill vi reseta databasen
-            // innan vi gör ett nytt test? (enda skillnaden blir [5] i expect nedan).
-            // bör vi isf reseta i föregående test för att "städa upp" när testet körts?
-
             const title = "Nytt dokument";
             const content = "Ny text";
 
             await request(app).get(`/add/${title}/${content}`);
             const res = await request(app).get('/');
 
-            expect(res.body.docs[5]._id).toBeDefined();
-            expect(res.body.docs[5].title).toEqual(title);
-            expect(res.body.docs[5].content).toEqual(content);
-            expect(res.body.docs[5].created).toBeDefined();
+            expect(res.body.docs[4]._id).toBeDefined();
+            expect(res.body.docs[4].title).toEqual(title);
+            expect(res.body.docs[4].content).toEqual(content);
+            expect(res.body.docs[4].created).toBeDefined();
+
+            await request(app).get('/reset');
         });
     });
 });
 
-// Stäng servern efter testerna
 afterAll(() => {
     server.close();
 });
