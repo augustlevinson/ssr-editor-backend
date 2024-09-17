@@ -4,7 +4,7 @@
   "description": "Backend for SSR Editor",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "nodemon app.js"
   },
   "keywords": [],
