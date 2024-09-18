@@ -33,12 +33,13 @@ const docs = {
 
     addOne: async function addOne(addTitle, addContent) {
         let db = await getDb();
-        let addCreated = new Date().toLocaleString()
+        let addCreated = new Date().toLocaleString('sv-SE')
         try {
             await db.collection.insertOne({
                 title: addTitle,
                 content: addContent,
-                created: addCreated
+                created: addCreated,
+                updated: addCreated
             });
             const addDoc = await db.collection.findOne({created: addCreated})
             const filter = { _id: new ObjectId(`${addDoc._id}`) };
@@ -64,7 +65,7 @@ const docs = {
         const updatedContent = {
             title: body.title,
             content: body.content,
-            updated: new Date().toLocaleString()
+            updated: new Date().toLocaleString('sv-SE')
         };
 
         try {
@@ -100,7 +101,8 @@ const docs = {
 
         setupContent = setupContent.map(doc => ({
             ...doc,
-            created: new Date().toLocaleString()
+            created: new Date().toLocaleString('sv-SE'),
+            updated: new Date().toLocaleString('sv-SE')
         }));
 
         await db.collection.deleteMany();
