@@ -3,10 +3,14 @@ const colName = "entries";
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.k5lbc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 async function getDb() {
-    let dsn = uri || "mongodb://localhost:27017/docs";
+    let dsn;
 
     if (process.env.NODE_ENV === 'test') {
         dsn = "mongodb://localhost:27017/test";
+    } else if (process.env.NODE_ENV === 'development') {
+        dsn = "mongodb://localhost:27017/docs";
+    } else {
+        dsn = uri;
     }
 
     const client = await mongo.connect(dsn);

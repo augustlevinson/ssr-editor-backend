@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest --coverage",
     "start": "node app.js",
+    "start-dev": "NODE_ENV=development node app.js",
     "watch": "nodemon app.js"
   },
   "keywords": [],
