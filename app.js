@@ -43,10 +43,8 @@ app.get('/add/:title?/:content?', async (req, res) => {
     return res.redirect(`/`);
 });
 
-app.post("/edit", async (req, res) => {
-    await documents.editOne(req.body);
-
-    return res.redirect(`/docs/${req.body.id}`);
+app.put("/edit", async (req, res) => {
+    return res.json({doc: await documents.editOne(req.body)})
 });
 
 app.get('/docs/:id', async (req, res) => {
