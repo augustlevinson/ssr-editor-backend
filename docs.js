@@ -61,7 +61,7 @@ const docs = {
     editOne: async function editOne(body) {
         let db = await getDb();
 
-        const filter = { _id: new ObjectId(`${body.id}`) };
+        const filter = { _id: new ObjectId(`${body._id}`) };
         const updatedContent = {
             title: body.title,
             content: body.content,
