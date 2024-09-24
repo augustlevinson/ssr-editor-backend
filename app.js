@@ -35,10 +35,8 @@ app.get('/add/:title?/:content?', async (req, res) => {
     
     if (title && content) {
         await documents.addOne(title, content);
-    }
-    
-    if (!(title && content)) {
-        await documents.addOne("Titel", "")
+    } else {
+        await documents.addOne("Namnlöst dokument", "");
     }
     return res.redirect(`/`);
 });
