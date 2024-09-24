@@ -6,11 +6,13 @@ process.env.NODE_ENV = 'test';
 
 let db;
 let testId;
+let testObjectId;
 
 beforeAll(async () => {
     await request(app).get('/reset');
     db = await request(app).get('/');
     testId = db._body.docs[1].doc_id;
+    testObjectId = db._body.docs[1]._id
 });
 
 
@@ -63,6 +65,51 @@ describe('API Endpoints', () => {
             expect(resAfter.body.docs[4].created).toBeDefined();
             
             await request(app).get('/reset'); 
+        });
+    });
+    describe('PUT /edit', () => {
+        it("/edit                      should edit a document with given values", async () => {
+            const resBefore = await request(app).get(`/docs/${testId}`);
+            
+            const requestBody = {
+                _id: testObjectId,
+                title: "newTitle",
+                content: "newContent"
+            };
+            await request(app).put("/edit").send(requestBody)
+            const resAfter = await request(app).get(`/docs/${testId}`);
+
+            expect(resBefore._body.doc.title).not.toEqual(resAfter._body.doc.title)
+            expect(resBefore._body.doc.content).not.toEqual(resAfter._body.doc.content)
+
+            await request(app).get('/reset'); 
+        });
+    });
+    
+    describe('DELETE /delete', () => {
+        it("/delete                    should delete given document", async () => {
+            await request(app).get(`/docs/${testId}`);
+            const requestBody = {
+                id: testId
+            }
+
+            await request(app).delete("/delete").send(requestBody)
+            const resAfter = await request(app).get(`/docs/${testId}`);
+
+            expect(resAfter._body.doc).toEqual(null)
+
+            await request(app).get('/reset');
+        });
+        
+        it("/delete                    should fail to delete", async () => {
+            const faultyId = new ObjectId().toString().slice(-6)
+            
+            const requestBody = {
+                id: faultyId
+            }
+
+            const res = await request(app).delete("/delete").send(requestBody)
+            expect(res._body.deleted.deletedCount).toEqual(0)            
         });
     });
 });
