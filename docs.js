@@ -85,7 +85,7 @@ const docs = {
     deleteOne: async function deleteOne(id) {
         let db = await getDb();
 
-        const filter = { _id: new ObjectId(`${id}`) };
+        const filter = { doc_id: id };
 
         try {
             return await db.collection.deleteOne(

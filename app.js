@@ -49,10 +49,8 @@ app.get('/', async (req, res) => {
     return res.json({docs: await documents.getAll()});
 });
 
-app.post("/delete", async (req, res) => {
-    await documents.deleteOne(req.body.id);
-
-    return res.redirect(`/`);
+app.delete("/delete", async (req, res) => {
+    return res.json({deleted: await documents.deleteOne(req.body.id)});
 });
 
 app.get("/reset", async (req, res) => {
