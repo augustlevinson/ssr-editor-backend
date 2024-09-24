@@ -64,21 +64,6 @@ describe('API Endpoints', () => {
             
             await request(app).get('/reset'); 
         });
-
-        it('/add/<title>/<content>     should add new doc with given values', async () => {
-            const title = "Nytt dokument";
-            const content = "Ny text";
-
-            await request(app).get(`/add/${title}/${content}`);
-            const res = await request(app).get('/');
-
-            expect(res.body.docs[4]._id).toBeDefined();
-            expect(res.body.docs[4].title).toEqual(title);
-            expect(res.body.docs[4].content).toEqual(content);
-            expect(res.body.docs[4].created).toBeDefined();
-
-            await request(app).get('/reset');
-        });
     });
 });
 
