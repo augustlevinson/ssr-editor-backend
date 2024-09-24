@@ -58,7 +58,7 @@ describe('API Endpoints', () => {
 
             expect(resBefore._body.docs.length).not.toEqual(resAfter._body.docs.length);
             expect(resAfter.body.docs[4]._id).toBeDefined();
-            expect(resAfter.body.docs[4].title).toEqual('Titel');
+            expect(resAfter.body.docs[4].title).toEqual('Namnlöst dokument');
             expect(resAfter.body.docs[4].content).toEqual('');
             expect(resAfter.body.docs[4].created).toBeDefined();
             
