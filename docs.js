@@ -34,6 +34,7 @@ const docs = {
     addOne: async function addOne(addTitle, addContent) {
         let db = await getDb();
         let addCreated = new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'})
+        let updatedContent;
         try {
             await db.collection.insertOne({
                 title: addTitle,
@@ -43,7 +44,7 @@ const docs = {
             });
             const addDoc = await db.collection.findOne({created: addCreated})
             const filter = { _id: new ObjectId(`${addDoc._id}`) };
-            const updatedContent = {
+            updatedContent = {
                 ...addDoc,
                 doc_id: filter._id.toString().slice(-6)
             };
@@ -56,6 +57,7 @@ const docs = {
         } finally {
             await db.client.close();
         }
+        return updatedContent.doc_id
     },
 
     editOne: async function editOne(body) {

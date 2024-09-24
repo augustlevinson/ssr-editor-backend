@@ -29,16 +29,8 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/add/:title?/:content?', async (req, res) => {
-    const title = req.params.title;
-    const content = req.params.content;
-    
-    if (title && content) {
-        await documents.addOne(title, content);
-    } else {
-        await documents.addOne("Namnlöst dokument", "");
-    }
-    return res.redirect(`/`);
+app.get('/add', async (req, res) => {
+    return res.json({new_id: await documents.addOne("Namnlöst dokument", "")})
 });
 
 app.put("/edit", async (req, res) => {
