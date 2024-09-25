@@ -72,7 +72,9 @@ app.post('/users/register', async (req, res) => {
 });
 
 app.post('/users/login', async (req, res) => {
-    return res.json({user: await auth.login(req.body)});
+    const result = {user: await auth.login(req.body)};
+    console.log(result)
+    return result
 });
 
 const server = app.listen(port, () => {
