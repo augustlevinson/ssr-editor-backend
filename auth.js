@@ -1,11 +1,61 @@
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const getDb = require("./db/database.js");
-const colName = "entries";
+const colName = "users";
 
-let setupContent = require('./db/setupContent.json');
+const auth = {
+    login: async function login(username, password) {
+        const user = {
+            email: username,
+            password: password
+        };
 
+        const response = await fetch(`${baseURL}/auth/login`, {
+            body: JSON.stringify(user),
+            headers: {
+                "content-type": "application/json",
+            },
+            method: "POST",
+        });
+        const result = await response.json();
 
-const docs = {
+        console.log(result);
+
+        if ("errors" in result) {
+            return result.errors.detail;
+        } else {
+            auth.token = result.data.token;
+            console.log(auth.token);
+            return "ok";
+        }
+    },
+
+    register: async function register(body) {
+        let db;
+
+        const username = body.email;
+        const password = body.password;
+        const saltRounds = 10;
+
+        bcrypt.hash(password, saltRounds, async function(err, hash) {
+            db = await getDb(colName);
+
+            const user = {
+                email: username,
+                password: hash
+            };
+    
+            try {
+                return await db.collection.insertOne(user);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                await db.client.close();
+            }
+        });
+    },
+
     getAll: async function getAll() {
         let db = await getDb(colName);
 
@@ -87,7 +137,7 @@ const docs = {
     deleteOne: async function deleteOne(id) {
         let db = await getDb(colName);
 
-        const filter = { doc_id: id };
+        const filter = { user_id: id };
 
         try {
             return await db.collection.deleteOne(
@@ -100,33 +150,11 @@ const docs = {
         }
     },
 
-    resetDb: async function resetDb() {
+    clearDb: async function clearDb() {
         let db = await getDb(colName);
-
-        setupContent = setupContent.map(doc => ({
-            ...doc,
-            created: new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'}),
-            updated: new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'})
-        }));
-
         await db.collection.deleteMany();
-        await db.collection.insertMany(setupContent);
-
-        const content = await db.collection.find({}).toArray();
-        for (const doc in content) {
-            const filter = { _id: new ObjectId(`${content[doc]._id}`) };
-            const updatedContent = {
-                ...content[doc],
-                doc_id: filter._id.toString().slice(-6)
-            };
-            await db.collection.updateOne(
-                filter,
-                { $set: updatedContent }
-            );
-        }
-
         await db.client.close();
     }
 };
 
-module.exports = docs;
+module.exports = auth;

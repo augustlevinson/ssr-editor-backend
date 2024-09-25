@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const documents = require('./docs.js');
+const auth = require('./auth.js');
 
 const app = express();
 
@@ -56,10 +57,21 @@ app.delete("/delete", async (req, res) => {
 app.get("/reset", async (req, res) => {
     await documents.resetDb();
     return res.redirect(`/`);
-})
+});
+
+app.get('/users/all', async (req, res) => {
+    return res.json({users: await auth.getAll()});
+});
+
+app.get('/users/clear', async (req, res) => {
+    return res.json({users: await auth.clearDb()});
+});
+
+
+app.post('/users/register', async (req, res) => {
+    return res.json({status: await auth.register(req.body)});
+});
 
 const server = app.listen(port, () => {
     console.log(`SSR Editor running port ${port}`)
 });
-
-module.exports = { app, server };
