@@ -15,26 +15,23 @@ const auth = {
         const password = body.password;
         const user = await db.collection.findOne({email: username})
 
-        let jwtToken = "JWT token test";
-
-        bcrypt.compare(password, user.password, async function(err, result) {
+        try {
+        const result = await bcrypt.compare(password, user.password);
             if (result) {
                 const payload = { email: user.email };
-                jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+                const jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
 
-                return jwtToken
-                    // return res.json({
-                    //     data: {
-                    //         type: "success",
-                    //         message: "User logged in",
-                    //         user: payload,
-                    //         token: jwtToken
-                    //     }
-                    // });
+                return { token: jwtToken}
+
             } else {
                 console.log("Lösenorden matchar inte")
+                return false
             }
-        });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
     },
 
     register: async function register(body) {
