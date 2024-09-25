@@ -67,9 +67,12 @@ app.get('/users/clear', async (req, res) => {
     return res.json({users: await auth.clearDb()});
 });
 
-
 app.post('/users/register', async (req, res) => {
     return res.json({status: await auth.register(req.body)});
+});
+
+app.post('/users/login', async (req, res) => {
+    return res.json({user: await auth.login(req.body)});
 });
 
 const server = app.listen(port, () => {
