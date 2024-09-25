@@ -2,33 +2,39 @@ const { ObjectId } = require("mongodb");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const getDb = require("./db/database.js");
+
 const colName = "users";
+const jwtSecret = process.env.JWT_SECRET;
+const saltRounds = 10;
 
 const auth = {
-    login: async function login(username, password) {
-        const user = {
-            email: username,
-            password: password
-        };
+    login: async function login(body) {
+        let db = await getDb(colName);
+        
+        const username = body.email;
+        const password = body.password;
+        const user = await db.collection.findOne({email: username})
 
-        const response = await fetch(`${baseURL}/auth/login`, {
-            body: JSON.stringify(user),
-            headers: {
-                "content-type": "application/json",
-            },
-            method: "POST",
+        let jwtToken = "JWT token test";
+
+        bcrypt.compare(password, user.password, async function(err, result) {
+            if (result) {
+                const payload = { email: user.email };
+                jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+
+                return jwtToken
+                    // return res.json({
+                    //     data: {
+                    //         type: "success",
+                    //         message: "User logged in",
+                    //         user: payload,
+                    //         token: jwtToken
+                    //     }
+                    // });
+            } else {
+                console.log("Lösenorden matchar inte")
+            }
         });
-        const result = await response.json();
-
-        console.log(result);
-
-        if ("errors" in result) {
-            return result.errors.detail;
-        } else {
-            auth.token = result.data.token;
-            console.log(auth.token);
-            return "ok";
-        }
     },
 
     register: async function register(body) {
@@ -36,7 +42,6 @@ const auth = {
 
         const username = body.email;
         const password = body.password;
-        const saltRounds = 10;
 
         bcrypt.hash(password, saltRounds, async function(err, hash) {
             db = await getDb(colName);
