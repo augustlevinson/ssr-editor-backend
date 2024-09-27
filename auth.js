@@ -9,29 +9,35 @@ const saltRounds = 10;
 
 const auth = {
     login: async function login(body) {
-        let db = await getDb(colName);
+        let success;
+        let reason;
+        let jwtToken;
         
         const username = body.email;
         const password = body.password;
-        const user = await db.collection.findOne({email: username})
 
-        try {
-        const result = await bcrypt.compare(password, user.password);
-            if (result) {
-                const payload = { email: user.email };
-                const jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+        const user = await auth.getOne(username);
 
-                return { token: jwtToken}
+        if (user === null) {
+            success = false
+            reason = "no user"
+        } else {
+            try {
+                const match = await bcrypt.compare(password, user.password);
+                if (match) {
+                    const payload = { email: user.email };
+                    jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+                    success = true;
 
-            } else {
-                console.log("Lösenorden matchar inte")
-                return false
+                } else {
+                    success = false;
+                    reason = "wrong password"
+                }
+            } catch (e) {
+                console.error(e);
             }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
         }
+        return { success, jwtToken, reason };
     },
 
     register: async function register(body) {
@@ -103,11 +109,11 @@ const auth = {
     editOne: async function editOne(body) {
         let db = await getDb(colName);
 
-        const filter = { _id: new ObjectId(`${body._id}`) };
+        const user = await auth.getOne(body.email)
+
+        const filter = { _id: new ObjectId(`${user._id}`) };
         const updatedContent = {
-            title: body.title,
-            content: body.content,
-            updated: new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'})
+            token: body.token
         };
 
         try {
