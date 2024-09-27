@@ -35,27 +35,31 @@ const auth = {
     },
 
     register: async function register(body) {
-        let db;
-
+        let success;
+    
         const username = body.email;
         const password = body.password;
-
-        bcrypt.hash(password, saltRounds, async function(err, hash) {
-            db = await getDb(colName);
-
-            const user = {
-                email: username,
-                password: hash
-            };
+        const checkEmail = await auth.getOne(username);
     
+        if (checkEmail !== null) {
+            success = false
+        } else {
             try {
-                return await db.collection.insertOne(user);
+                const hash = await bcrypt.hash(password, saltRounds);
+        
+                const user = {
+                    email: username,
+                    password: hash
+                };
+    
+                await auth.addOne(user);
+                success = true
+                
             } catch (e) {
                 console.error(e);
-            } finally {
-                await db.client.close();
             }
-        });
+        }
+        return success;
     },
 
     getAll: async function getAll() {
@@ -72,10 +76,10 @@ const auth = {
         }
     },
 
-    getOne: async function getOne(id) {
+    getOne: async function getOne(email) {
         let db = await getDb(colName);
         try {
-            return await db.collection.findOne({doc_id: id})
+            return await db.collection.findOne({email: email})
         } catch (e) {
             console.error(e);
 
@@ -85,33 +89,15 @@ const auth = {
         }
     },
 
-    addOne: async function addOne(addTitle, addContent) {
+    addOne: async function addOne(user) {
         let db = await getDb(colName);
-        let addCreated = new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'})
-        let updatedContent;
         try {
-            await db.collection.insertOne({
-                title: addTitle,
-                content: addContent,
-                created: addCreated,
-                updated: addCreated
-            });
-            const addDoc = await db.collection.findOne({created: addCreated})
-            const filter = { _id: new ObjectId(`${addDoc._id}`) };
-            updatedContent = {
-                ...addDoc,
-                doc_id: filter._id.toString().slice(-6)
-            };
-            await db.collection.updateOne(
-                filter,
-                { $set: updatedContent }
-            );
+            return await db.collection.insertOne(user);
         } catch (e) {
             console.error(e);
         } finally {
             await db.client.close();
         }
-        return updatedContent.doc_id
     },
 
     editOne: async function editOne(body) {
