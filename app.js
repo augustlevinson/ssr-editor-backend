@@ -82,3 +82,5 @@ app.post('/users/update', async (req, res) => {
 const server = app.listen(port, () => {
     console.log(`SSR Editor running port ${port}`)
 });
+
+module.exports = { app, server }
