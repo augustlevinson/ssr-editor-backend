@@ -11,8 +11,8 @@ let testObjectId;
 beforeAll(async () => {
     await request(app).get('/reset');
     db = await request(app).get('/');
-    testId = db._body.docs[1].doc_id;
-    testObjectId = db._body.docs[1]._id
+    testId = db.body.docs[1].doc_id;
+    testObjectId = db.body.docs[1]._id
 });
 
 
@@ -44,10 +44,10 @@ describe('API Endpoints', () => {
         it('/docs/<testId>             should have properties `title` and `content`', async () => {
             const res = await request(app).get(`/docs/${testId}`);
             expect(res.statusCode).toEqual(200);
-            expect(res._body.doc._id).toBeDefined();
-            expect(res._body.doc.title).toEqual('Glass');
-            expect(res._body.doc.content).toEqual('Glass är gott.');
-            expect(res._body.doc.created).toBeDefined();
+            expect(res.body.doc._id).toBeDefined();
+            expect(res.body.doc.title).toEqual('Glass');
+            expect(res.body.doc.content).toEqual('Glass är gott.');
+            expect(res.body.doc.created).toBeDefined();
 
         });
     });
@@ -58,7 +58,7 @@ describe('API Endpoints', () => {
             await request(app).get(`/add`);
             const resAfter = await request(app).get('/');
 
-            expect(resBefore._body.docs.length).not.toEqual(resAfter._body.docs.length);
+            expect(resBefore.body.docs.length).not.toEqual(resAfter.body.docs.length);
             expect(resAfter.body.docs[4]._id).toBeDefined();
             expect(resAfter.body.docs[4].title).toEqual('Namnlöst dokument');
             expect(resAfter.body.docs[4].content).toEqual('');
@@ -79,8 +79,8 @@ describe('API Endpoints', () => {
             await request(app).put("/edit").send(requestBody)
             const resAfter = await request(app).get(`/docs/${testId}`);
 
-            expect(resBefore._body.doc.title).not.toEqual(resAfter._body.doc.title)
-            expect(resBefore._body.doc.content).not.toEqual(resAfter._body.doc.content)
+            expect(resBefore.body.doc.title).not.toEqual(resAfter.body.doc.title)
+            expect(resBefore.body.doc.content).not.toEqual(resAfter.body.doc.content)
 
             await request(app).get('/reset'); 
         });
@@ -96,7 +96,7 @@ describe('API Endpoints', () => {
             await request(app).delete("/delete").send(requestBody)
             const resAfter = await request(app).get(`/docs/${testId}`);
 
-            expect(resAfter._body.doc).toEqual(null)
+            expect(resAfter.body.doc).toEqual(null)
 
             await request(app).get('/reset');
         });
@@ -109,7 +109,7 @@ describe('API Endpoints', () => {
             }
 
             const res = await request(app).delete("/delete").send(requestBody)
-            expect(res._body.deleted.deletedCount).toEqual(0)            
+            expect(res.body.deleted.deletedCount).toEqual(0)            
         });
     });
 });
