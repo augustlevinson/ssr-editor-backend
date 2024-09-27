@@ -68,7 +68,7 @@ app.get('/users/clear', async (req, res) => {
 });
 
 app.post('/users/register', async (req, res) => {
-    return res.json({status: await auth.register(req.body)});
+    return res.json({success: await auth.register(req.body)});
 });
 
 app.post('/users/login', async (req, res) => {
