@@ -33,13 +33,16 @@ const docs = {
         }
     },
 
-    addOne: async function addOne(addTitle, addContent) {
+    addOne: async function addOne(addTitle, addContent, addOwner) {
         let db = await getDb(colName);
         let addCreated = new Date().toLocaleString('sv-SE', {timeZone: 'Europe/Stockholm'})
         let updatedContent;
         try {
             await db.collection.insertOne({
                 title: addTitle,
+                users: {
+                    owner: addOwner,
+                },
                 content: addContent,
                 created: addCreated,
                 updated: addCreated

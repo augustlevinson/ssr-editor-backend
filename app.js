@@ -47,6 +47,11 @@ app.get('/search/:string', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
+    const userValidation = await auth.validateToken(req.headers)
+    console.log(`userValidation: ${userValidation}`)
+    // if (!userValidation) {
+    //     return {}
+    // }
     return res.json({docs: await documents.getAll()});
 });
 
