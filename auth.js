@@ -40,6 +40,31 @@ const auth = {
         return { success, jwtToken, reason };
     },
 
+    validateToken: async function validateToken(headers) {
+        let success;
+        
+        const token = headers['x-access-token'];
+        console.log(headers)
+        console.log(token)
+
+        if (!token) {
+            success = false
+        } else {
+            try {
+                jwt.verify(token, jwtSecret, function(err, decoded) {
+                    if (err) {
+                        return err;
+                    }
+                    success = true;
+                    return success;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        return success;
+    },
+
     register: async function register(body) {
         let success;
     
@@ -67,6 +92,8 @@ const auth = {
         }
         return success;
     },
+
+
 
     getAll: async function getAll() {
         let db = await getDb(colName);
