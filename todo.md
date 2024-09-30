@@ -6,6 +6,7 @@ Design
 - Listvy och ikonvy
 - Formatering (bold, italic osv)
 - Ordräknare
+- Lägg till inloggad-badge eller dylikt
 
 
 Funktionalitet
@@ -18,3 +19,6 @@ Funktionalitet
 - Kommentera med CTRL+SHIFT+C/CMD+SHIFT+C?
 - /add - ska det vara en app.post()?
 - frontend / ska rendera DocumentList OM inloggad, annars landing page
+- Lägg ev till "profilsida" där användaren kan byta lösenord/ta bort konto etc.
+- Lägg till alternativ för att endast läsa eller redigera delade dokument
+- Lägg till vem som är ägare av dokumentet
