@@ -6,11 +6,13 @@ let setupContent = require('./db/setupContent.json');
 
 
 const docs = {
-    getAll: async function getAll() {
+    getAll: async function getAll(userId) {
         let db = await getDb(colName);
+        console.log(`userId: ${userId}`)
 
         try {
-            return await db.collection.find({}).toArray();
+            // filtreringen funkar inte, returnerar tom array
+            return await db.collection.find({owner: userId}).toArray();
         } catch (e) {
             console.error(e);
 
@@ -40,9 +42,7 @@ const docs = {
         try {
             await db.collection.insertOne({
                 title: addTitle,
-                users: {
-                    owner: addOwner,
-                },
+                owner: addOwner,
                 content: addContent,
                 created: addCreated,
                 updated: addCreated
