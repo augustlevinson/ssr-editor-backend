@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get('/add', async (req, res) => {
-    return res.json({new_id: await documents.addOne("Namnlöst dokument", "")})
+    return res.json({new_id: await documents.addOne("Namnlöst dokument", "", userId)})
 });
 
 app.put("/edit", async (req, res) => {
@@ -54,12 +54,14 @@ app.get('/search/:string', async (req, res) => {
 
 app.get('/', async (req, res) => {
     let validate = false;
+    let userCookie;
     if (req.cookies.user) {
         userCookie = JSON.parse(req.cookies.user);
         validate = await auth.validateToken(userCookie)
     }
     if (validate) {
-        return res.json({docs: await documents.getAll()});
+        const user = await auth.getOne(userCookie.email);
+        return res.json({docs: await documents.getAll(user._id)});
     } return res.json({docs: "unauthenticated"});
 });
 
@@ -90,6 +92,10 @@ app.post('/users/login', async (req, res) => {
 
 app.post('/users/update', async (req, res) => {
     return res.json(await auth.editOne(req.body));
+});
+
+app.get('/users/:user', async (req, res) => {
+    return res.json({user: await auth.getOne(req.params.user)});
 });
 
 const server = app.listen(port, () => {
