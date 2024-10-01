@@ -7,14 +7,18 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 const documents = require('./docs.js');
 const auth = require('./auth.js');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true,
+    allowedHeaders: "Content-Type,Authorization"
+}));
 
 app.disable('x-powered-by');
 
@@ -49,12 +53,8 @@ app.get('/search/:string', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-    // const userValidation = await auth.validateToken(req.headers)
-    // console.log(`userValidation: ${userValidation}`)
-    console.log(`cookies: ${res.cookie("user").email}`)
-    // if (!userValidation) {
-    //     return {}
-    // }
+    const userCookie = req.cookies.user;
+    console.log(`userCookie: ${userCookie}`)
     return res.json({docs: await documents.getAll()});
 });
 
