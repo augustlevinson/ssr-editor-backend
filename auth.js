@@ -44,8 +44,6 @@ const auth = {
         let success;
         
         const token = headers['x-access-token'];
-        console.log(headers)
-        console.log(token)
 
         if (!token) {
             success = false

@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
+const cookieParser = require('cookie-parser')
 
 const documents = require('./docs.js');
 const auth = require('./auth.js');
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get('/add', async (req, res) => {
     return res.json({new_id: await documents.addOne("Namnlöst dokument", "")})
@@ -47,8 +49,9 @@ app.get('/search/:string', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-    const userValidation = await auth.validateToken(req.headers)
-    console.log(`userValidation: ${userValidation}`)
+    // const userValidation = await auth.validateToken(req.headers)
+    // console.log(`userValidation: ${userValidation}`)
+    console.log(`cookies: ${res.cookie("user").email}`)
     // if (!userValidation) {
     //     return {}
     // }
