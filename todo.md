@@ -22,3 +22,4 @@ Funktionalitet
 - Lägg ev till "profilsida" där användaren kan byta lösenord/ta bort konto etc.
 - Lägg till alternativ för att endast läsa eller redigera delade dokument
 - Lägg till vem som är ägare av dokumentet
+- Eventuellt byta userCookie mot enbart token i validateToken()
