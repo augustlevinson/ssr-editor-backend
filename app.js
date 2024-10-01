@@ -53,9 +53,14 @@ app.get('/search/:string', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-    const userCookie = req.cookies.user;
-    console.log(`userCookie: ${userCookie}`)
-    return res.json({docs: await documents.getAll()});
+    let validate = false;
+    if (req.cookies.user) {
+        userCookie = JSON.parse(req.cookies.user);
+        validate = await auth.validateToken(userCookie)
+    }
+    if (validate) {
+        return res.json({docs: await documents.getAll()});
+    } return res.json({docs: "unauthenticated"});
 });
 
 app.delete("/delete", async (req, res) => {

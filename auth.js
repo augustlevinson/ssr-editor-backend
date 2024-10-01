@@ -40,10 +40,10 @@ const auth = {
         return { success, jwtToken, reason };
     },
 
-    validateToken: async function validateToken(headers) {
+    validateToken: async function validateToken(userCookie) {
         let success;
-        
-        const token = headers['x-access-token'];
+
+        const token = userCookie.token;
 
         if (!token) {
             success = false
@@ -51,7 +51,9 @@ const auth = {
             try {
                 jwt.verify(token, jwtSecret, function(err, decoded) {
                     if (err) {
-                        return err;
+                        console.log(err)
+                        success = false;
+                        return success;
                     }
                     success = true;
                     return success;
