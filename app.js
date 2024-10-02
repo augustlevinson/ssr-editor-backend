@@ -61,8 +61,12 @@ app.get('/', async (req, res) => {
     }
     if (validate) {
         const user = await auth.getOne(userCookie.email);
-        return res.json({docs: await documents.getAll(user._id)});
+        return res.json({docs: await documents.getAllByUser(user._id)});
     } return res.json({docs: "unauthenticated"});
+});
+
+app.get('/all', async (req, res) => {
+    return res.json({docs: await documents.getAll()});
 });
 
 app.delete("/delete", async (req, res) => {
