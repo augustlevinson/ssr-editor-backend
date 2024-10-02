@@ -37,7 +37,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get('/add', async (req, res) => {
-    return res.json({new_id: await documents.addOne("Namnlöst dokument", "", userId)})
+    let userCookie;
+    let user;
+    if (req.cookies.user) {
+        userCookie = JSON.parse(req.cookies.user);
+        user = await auth.getOne(userCookie.email)
+    }
+    console.log(`userCookie: ${userCookie}`)
+    console.log(`user: ${user}`)
+    return res.json({new_id: await documents.addOne("Namnlöst dokument", "", user._id)})
 });
 
 app.put("/edit", async (req, res) => {

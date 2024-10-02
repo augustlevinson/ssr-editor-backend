@@ -10,7 +10,7 @@ const docs = {
         let db = await getDb(colName);
 
         try {
-            return await db.collection.find({}).toArray();toArray();
+            return await db.collection.find({}).toArray();
         } catch (e) {
             console.error(e);
 
@@ -25,8 +25,7 @@ const docs = {
         console.log(`userId: ${userId}`)
 
         try {
-            // filtreringen funkar inte, returnerar tom array
-            return await db.collection.find({owner: userId}).toArray();
+            return await db.collection.find({users: {owner: userId}}).toArray();
         } catch (e) {
             console.error(e);
 
@@ -56,7 +55,9 @@ const docs = {
         try {
             await db.collection.insertOne({
                 title: addTitle,
-                owner: addOwner,
+                users: {
+                    owner: new ObjectId(`${addOwner}`),
+                },
                 content: addContent,
                 created: addCreated,
                 updated: addCreated
