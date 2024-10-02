@@ -6,7 +6,21 @@ let setupContent = require('./db/setupContent.json');
 
 
 const docs = {
-    getAll: async function getAll(userId) {
+    getAll: async function getAll() {
+        let db = await getDb(colName);
+
+        try {
+            return await db.collection.find({}).toArray();toArray();
+        } catch (e) {
+            console.error(e);
+
+                return [];
+            } finally {
+                await db.client.close();
+        }
+    },
+
+    getAllByUser: async function getAllByUser(userId) {
         let db = await getDb(colName);
         console.log(`userId: ${userId}`)
 
