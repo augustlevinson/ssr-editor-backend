@@ -25,7 +25,7 @@ const docs = {
         console.log(`userId: ${userId}`)
 
         try {
-            return await db.collection.find({users: {owner: userId}}).toArray();
+            return await db.collection.find({owner: userId}).toArray();
         } catch (e) {
             console.error(e);
 
@@ -55,9 +55,9 @@ const docs = {
         try {
             await db.collection.insertOne({
                 title: addTitle,
-                users: {
-                    owner: new ObjectId(`${addOwner}`),
-                },
+                owner: new ObjectId(`${addOwner}`),
+                invited: [],
+                collaborators: [],
                 content: addContent,
                 created: addCreated,
                 updated: addCreated
@@ -80,6 +80,31 @@ const docs = {
         return updatedContent.doc_id
     },
 
+    addInvite: async function addInvite(body) {
+        let db = await getDb(colName);
+
+        const document = await db.collection.findOne({_id: new ObjectId(`${body.docId}`)})
+        const invited = document.invited;
+        invited.push(body.recipient)
+
+        const filter = { _id: new ObjectId(`${body.docId}`) };
+        const updatedDocument = {
+            ...document,
+            invited: invited
+        };
+
+        try {
+            return await db.collection.updateOne(
+                filter,
+                { $set: updatedDocument }
+            );
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+    
     editOne: async function editOne(body) {
         let db = await getDb(colName);
 

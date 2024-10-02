@@ -1,22 +1,22 @@
 const sgMail = require('@sendgrid/mail')
 
 const mail = {
-    sendEmail: async function sendEmail() {
+    sendEmail: async function sendEmail(body) {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY)
         const msg = {
-        to: 'caas23@student.bth.se', // Change to your recipient
-        from: 'aule23@student.bth.se', // Change to your verified sender
-        subject: 'Sending with SendGrid is Funky',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            to: body.recipient,
+            from: process.env.SENDGRID_SENDER, // vår verifierade sender
+            subject: `${body.sender} har bjudit in dig att redigera "${body.docTitle}"`,
+            text: 'and easy to do anywhere, even with Node.js',
+            html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         }
         sgMail
         .send(msg)
         .then(() => {
             console.log('Email sent')
         })
-        .catch((error) => {
-            console.error(error)
+        .catch((e) => {
+            console.error(e)
         })
     },
 
