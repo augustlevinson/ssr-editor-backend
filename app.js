@@ -111,8 +111,9 @@ app.get('/users/:user', async (req, res) => {
     return res.json({user: await auth.getOne(req.params.user)});
 });
 
-app.get('/send', async (req, res) => {
-    return await mail.sendEmail()
+app.post('/send', async (req, res) => {
+    await documents.addInvite(req.body)
+    return await mail.sendEmail(req.body)
 });
 const server = app.listen(port, () => {
     console.log(`SSR Editor running port ${port}`)
