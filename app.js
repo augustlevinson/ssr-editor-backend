@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 
 const documents = require('./docs.js');
 const auth = require('./auth.js');
+const mail = require('./mail.js');
 
 const app = express();
 
@@ -110,6 +111,9 @@ app.get('/users/:user', async (req, res) => {
     return res.json({user: await auth.getOne(req.params.user)});
 });
 
+app.get('/send', async (req, res) => {
+    return await mail.sendEmail()
+});
 const server = app.listen(port, () => {
     console.log(`SSR Editor running port ${port}`)
 });
