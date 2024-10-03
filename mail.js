@@ -8,7 +8,11 @@ const mail = {
             from: process.env.SENDGRID_SENDER, // vår verifierade sender
             subject: `${body.sender} har bjudit in dig att redigera "${body.docTitle}"`,
             text: 'and easy to do anywhere, even with Node.js',
-            html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            html: `<p>Du har blivit inbjudan att redigera ${body.docTitle} i SSR Editor.</p>
+                    <a href="${body.url}">Acceptera inbjudan</a>
+                    <p>Vänligen</p>
+                    <p><i>SSR Editor</i></p>`,
         }
         sgMail
         .send(msg)
