@@ -81,13 +81,13 @@ app.get("/role/:role", async (req, res) => {
     let userCookie;
     if (req.cookies.user) {
         userCookie = JSON.parse(req.cookies.user);
+        if (role === "invited") {
+            return res.json({ docs: await documents.getInvitedByEmail(userCookie.email) });
+        } else if (role === "collaborator") {
+            return res.json({ docs: await documents.getCollaboratorByEmail(userCookie.email) });
+        }
     }
 
-    if (role === "invited") {
-        return res.json({ docs: await documents.getInvitedByEmail(userCookie.email) });
-    } else if (role === "collaborator") {
-        return res.json({ docs: await documents.getCollaboratorByEmail(userCookie.email) });
-    }
 });
 
 app.get("/accept/:id", async (req, res) => {
