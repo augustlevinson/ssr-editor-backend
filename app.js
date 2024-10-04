@@ -13,23 +13,20 @@ const documents = require("./docs.js");
 const auth = require("./auth.js");
 const mail = require("./mail.js");
 
-const clientUrl = require("./environment.js")
+const clientUrl = require("./environment.js");
 
 const app = express();
 const httpServer = require("http").createServer(app);
 
 const io = require("socket.io")(httpServer, {
     cors: {
-      origin: clientUrl,
-      methods: ["GET", "POST"]
-    }
+        origin: clientUrl,
+        methods: ["GET", "POST"],
+    },
 });
 
-io.sockets.on('connection', function(socket) {
-    console.log("====================")
-    console.log(socket.id); // Nått lång och slumpat
-    console.log("====================")
-    socket.on('create', function(room) {
+io.sockets.on("connection", function (socket) {
+    socket.on("join", function (room) {
         socket.join(room);
     });
 });
@@ -69,7 +66,9 @@ app.get("/add", async (req, res) => {
 });
 
 app.put("/edit", async (req, res) => {
-    return res.json({ doc: await documents.editOne(req.body) });
+    const doc = await documents.editOne(req.body);
+    io.emit('update', { doc })
+    return res.json({ doc });
 });
 
 app.get("/docs/:id", async (req, res) => {
@@ -106,7 +105,6 @@ app.get("/role/:role", async (req, res) => {
             return res.json({ docs: await documents.getCollaboratorByEmail(userCookie.email) });
         }
     }
-
 });
 
 app.get("/accept/:id", async (req, res) => {
