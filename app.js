@@ -13,7 +13,26 @@ const documents = require("./docs.js");
 const auth = require("./auth.js");
 const mail = require("./mail.js");
 
+const clientUrl = require("./environment.js")
+
 const app = express();
+const httpServer = require("http").createServer(app);
+
+const io = require("socket.io")(httpServer, {
+    cors: {
+      origin: clientUrl,
+      methods: ["GET", "POST"]
+    }
+});
+
+io.sockets.on('connection', function(socket) {
+    console.log("====================")
+    console.log(socket.id); // Nått lång och slumpat
+    console.log("====================")
+    socket.on('create', function(room) {
+        socket.join(room);
+    });
+});
 
 app.use(
     cors({
@@ -136,7 +155,8 @@ app.post("/send", async (req, res) => {
     await documents.addInvite(req.body);
     return await mail.sendEmail(req.body);
 });
-const server = app.listen(port, () => {
+
+const server = httpServer.listen(port, () => {
     console.log(`SSR Editor running port ${port}`);
 });
 
