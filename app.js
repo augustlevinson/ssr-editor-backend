@@ -20,7 +20,7 @@ const httpServer = require("http").createServer(app);
 
 const io = require("socket.io")(httpServer, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: clientUrl,
         methods: ["GET", "POST"],
     },
 });
@@ -28,16 +28,22 @@ const io = require("socket.io")(httpServer, {
 io.on("connection", function (socket) {
     console.log(`Socket connected: ${socket.id}`);
 
-    socket.on("join", (documentId) => {
+    socket.on("join", async (documentId) => {
         socket.join(documentId);
         console.log(`Socket ${socket.id} joined room ${documentId}`);
 
-
+        // när vi joinar hämtas dokumentet från databasen
+        // det är detta vi ser när vi öppnar dokumentet
+        // vi slipper även fördröjningar om vi gör så här
+        const doc = await documents.getOne(documentId)
+        socket.emit('enterDoc', doc);
     });
 
-    socket.on("update", (documentData) => {
+    socket.on("update", async (documentData) => {
         const { doc_id, title, content } = documentData;
         console.log(`Received update for doc_id ${doc_id}`);
+
+        await documents.editOne({ doc_id, title, content })
         io.to(doc_id).emit('update', { doc_id, title, content });
     });
 
@@ -82,14 +88,12 @@ app.get("/add", async (req, res) => {
 
 app.put("/edit", async (req, res) => {
     const doc = await documents.editOne(req.body);
-    io.emit('update', { doc });
     return res.json({ doc });
 });
 
 app.get("/docs/:id", async (req, res) => {
     const doc = await documents.getOne(req.params.id);
     io.to(doc.doc_id).emit('update', doc);
-    console.log(`/docs/:id ${doc.doc_id}`)
     return res.json({ doc });
 });
 
