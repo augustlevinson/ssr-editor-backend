@@ -13,24 +13,42 @@ const documents = require("./docs.js");
 const auth = require("./auth.js");
 const mail = require("./mail.js");
 
-const clientUrl = require("./environment.js")
+const clientUrl = require("./environment.js");
 
 const app = express();
 const httpServer = require("http").createServer(app);
 
 const io = require("socket.io")(httpServer, {
     cors: {
-      origin: clientUrl,
-      methods: ["GET", "POST"]
-    }
+        origin: clientUrl,
+        methods: ["GET", "POST"],
+    },
 });
 
-io.sockets.on('connection', function(socket) {
-    console.log("====================")
-    console.log(socket.id); // Nått lång och slumpat
-    console.log("====================")
-    socket.on('create', function(room) {
-        socket.join(room);
+io.on("connection", function (socket) {
+    console.log(`Socket connected: ${socket.id}`);
+
+    socket.on("join", async (documentId) => {
+        socket.join(documentId);
+        console.log(`Socket ${socket.id} joined room ${documentId}`);
+
+        // när vi joinar hämtas dokumentet från databasen
+        // det är detta vi ser när vi öppnar dokumentet
+        // vi slipper även fördröjningar om vi gör så här
+        const doc = await documents.getOne(documentId)
+        socket.emit('enterDoc', doc);
+    });
+
+    socket.on("update", async (documentData) => {
+        const { doc_id, title, content } = documentData;
+        console.log(`Received update for doc_id ${doc_id}`);
+
+        await documents.editOne({ doc_id, title, content })
+        io.to(doc_id).emit('update', { doc_id, title, content });
+    });
+
+    socket.on("disconnect", (reason) => {
+        console.log(`Socket ${socket.id} disconnected: ${reason}`);
     });
 });
 
@@ -69,11 +87,14 @@ app.get("/add", async (req, res) => {
 });
 
 app.put("/edit", async (req, res) => {
-    return res.json({ doc: await documents.editOne(req.body) });
+    const doc = await documents.editOne(req.body);
+    return res.json({ doc });
 });
 
 app.get("/docs/:id", async (req, res) => {
-    return res.json({ doc: await documents.getOne(req.params.id) });
+    const doc = await documents.getOne(req.params.id);
+    io.to(doc.doc_id).emit('update', doc);
+    return res.json({ doc });
 });
 
 app.get("/", async (req, res) => {
@@ -106,7 +127,6 @@ app.get("/role/:role", async (req, res) => {
             return res.json({ docs: await documents.getCollaboratorByEmail(userCookie.email) });
         }
     }
-
 });
 
 app.get("/accept/:id", async (req, res) => {
