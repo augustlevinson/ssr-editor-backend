@@ -20,14 +20,29 @@ const httpServer = require("http").createServer(app);
 
 const io = require("socket.io")(httpServer, {
     cors: {
-        origin: clientUrl,
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
     },
 });
 
-io.sockets.on("connection", function (socket) {
-    socket.on("join", function (room) {
-        socket.join(room);
+io.on("connection", function (socket) {
+    console.log(`Socket connected: ${socket.id}`);
+
+    socket.on("join", (documentId) => {
+        socket.join(documentId);
+        console.log(`Socket ${socket.id} joined room ${documentId}`);
+
+
+    });
+
+    socket.on("update", (documentData) => {
+        const { doc_id, title, content } = documentData;
+        console.log(`Received update for doc_id ${doc_id}`);
+        io.to(doc_id).emit('update', { doc_id, title, content });
+    });
+
+    socket.on("disconnect", (reason) => {
+        console.log(`Socket ${socket.id} disconnected: ${reason}`);
     });
 });
 
@@ -67,12 +82,15 @@ app.get("/add", async (req, res) => {
 
 app.put("/edit", async (req, res) => {
     const doc = await documents.editOne(req.body);
-    io.emit('update', { doc })
+    io.emit('update', { doc });
     return res.json({ doc });
 });
 
 app.get("/docs/:id", async (req, res) => {
-    return res.json({ doc: await documents.getOne(req.params.id) });
+    const doc = await documents.getOne(req.params.id);
+    io.emit('update', { doc });
+    console.log(`/docs/:id ${doc.doc_id}`)
+    return res.json({ doc });
 });
 
 app.get("/", async (req, res) => {
