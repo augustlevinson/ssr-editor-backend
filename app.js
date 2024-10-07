@@ -88,7 +88,7 @@ app.put("/edit", async (req, res) => {
 
 app.get("/docs/:id", async (req, res) => {
     const doc = await documents.getOne(req.params.id);
-    io.emit('update', { doc });
+    io.to(doc.doc_id).emit('update', doc);
     console.log(`/docs/:id ${doc.doc_id}`)
     return res.json({ doc });
 });
