@@ -23,3 +23,6 @@ Funktionalitet
 - Lägg till alternativ för att endast läsa eller redigera delade dokument
 - Lägg till vem som är ägare av dokumentet
 - Eventuellt byta userCookie mot enbart token i validateToken()
+- Lista för att se vilka som kan delas med? (Emil nämnde under föreläsning)
+    Här skulle man kunna lägga till att användaren, i sin profil, 
+    kan välja att ha en publik profil (finns i listan), eller icke-publik (inte i listan).
