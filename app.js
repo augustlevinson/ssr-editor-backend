@@ -95,13 +95,15 @@ app.get("/add", async (req, res) => {
 });
 
 app.put("/edit", async (req, res) => {
-    const doc = await documents.editOne(req.body);
-    return res.json({ doc });
+    // const doc = await documents.editOne(req.body);
+    return res.json({ doc: await documents.editOne(req.body) });
 });
 
 app.get("/docs/:id", async (req, res) => {
     const doc = await documents.getOne(req.params.id);
-    io.to(doc.doc_id).emit('update', doc);
+    if (doc != null) {
+        io.to(doc.doc_id).emit('update', doc);
+    }
     return res.json({ doc });
 });
 

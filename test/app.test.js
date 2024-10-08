@@ -10,21 +10,21 @@ let testObjectId;
 
 beforeAll(async () => {
     await request(app).get('/reset');
-    db = await request(app).get('/');
+    db = await request(app).get('/all');
     testId = db.body.docs[1].doc_id;
     testObjectId = db.body.docs[1]._id
 });
 
 
 describe('API Endpoints', () => {
-    describe('GET /', () => {
-        it('/                          should get a JSON object', async () => {
-            const res = await request(app).get('/');
+    describe('GET /all', () => {
+        it('/all                       should get a JSON object', async () => {
+            const res = await request(app).get('/all');
             expect(res.statusCode).toEqual(200);
             expect(res.body).toBeInstanceOf(Object);
         });
-        it('/                          should have length and properties', async () => {
-            const res = await request(app).get('/');
+        it('/all                       should have length and properties', async () => {
+            const res = await request(app).get('/all');
             expect(res.body.docs.length).toEqual(4);
             expect(res.body.docs[0]).toHaveProperty("_id");
             expect(res.body.docs[0]).toHaveProperty("title");
@@ -70,15 +70,14 @@ describe('API Endpoints', () => {
     describe('PUT /edit', () => {
         it("/edit                      should edit a document with given values", async () => {
             const resBefore = await request(app).get(`/docs/${testId}`);
-            
             const requestBody = {
-                _id: testObjectId,
+                doc_id: testId,
                 title: "newTitle",
                 content: "newContent"
             };
             await request(app).put("/edit").send(requestBody)
             const resAfter = await request(app).get(`/docs/${testId}`);
-
+            
             expect(resBefore.body.doc.title).not.toEqual(resAfter.body.doc.title)
             expect(resBefore.body.doc.content).not.toEqual(resAfter.body.doc.content)
 
