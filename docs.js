@@ -79,7 +79,7 @@ const docs = {
         }
     },
 
-    addOne: async function addOne(addTitle, addContent, addOwner) {
+    addOne: async function addOne(addTitle, addContent, addOwner, addType) {
         let db = await getDb(colName);
         let addCreated = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" });
         let updatedContent;
@@ -92,6 +92,7 @@ const docs = {
                 content: addContent,
                 created: addCreated,
                 updated: addCreated,
+                type: addType,
             });
             const addDoc = await db.collection.findOne({ created: addCreated });
             const filter = { _id: new ObjectId(`${addDoc._id}`) };

@@ -84,14 +84,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get("/add", async (req, res) => {
+app.get("/add/:type", async (req, res) => {
+    const type = req.params.type;
     let userCookie;
     let user;
     if (req.cookies.user) {
         userCookie = JSON.parse(req.cookies.user);
         user = await auth.getOne(userCookie.email);
     }
-    return res.json({ new_id: await documents.addOne("Namnlöst dokument", "", user._id) });
+    return res.json({ new_id: await documents.addOne("Namnlöst dokument", "", user._id, type) });
 });
 
 app.put("/edit", async (req, res) => {
