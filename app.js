@@ -39,12 +39,20 @@ io.on("connection", function (socket) {
         socket.emit('enterDoc', doc);
     });
 
+    let throttle;
     socket.on("update", async (documentData) => {
         const { doc_id, title, content } = documentData;
         console.log(`Received update for doc_id ${doc_id}`);
 
-        await documents.editOne({ doc_id, title, content })
         io.to(doc_id).emit('update', { doc_id, title, content });
+
+        clearTimeout(throttle);
+        throttle = setTimeout( async () => {
+            await documents.editOne({ doc_id, title, content })
+            console.log(`Document ${doc_id} updated in db`);
+            const doc = await documents.getOne(doc_id);
+            console.log(`Title: ${doc.title}`);
+        }, 2000);
     });
 
     socket.on("disconnect", (reason) => {
