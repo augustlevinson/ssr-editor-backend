@@ -96,8 +96,11 @@ app.get("/add/:type", async (req, res) => {
 });
 
 app.put("/edit", async (req, res) => {
-    // const doc = await documents.editOne(req.body);
     return res.json({ doc: await documents.editOne(req.body) });
+});
+
+app.put("/comment/add", async (req, res) => {
+    return res.json({ doc: await documents.commentOne(req.body) });
 });
 
 app.get("/docs/:id", async (req, res) => {
