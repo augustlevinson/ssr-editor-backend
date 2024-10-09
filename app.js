@@ -41,10 +41,11 @@ io.on("connection", function (socket) {
 
     let throttle;
     socket.on("update", async (documentData) => {
-        const { doc_id, title, content } = documentData;
+        const { doc_id, title, content, comments } = documentData;
+        console.log(`BACKEND documentData ${documentData.comments}`);
         console.log(`Received update for doc_id ${doc_id}`);
 
-        io.to(doc_id).emit('update', { doc_id, title, content });
+        io.to(doc_id).emit('update', { doc_id, title, content, comments });
 
         clearTimeout(throttle);
         throttle = setTimeout( async () => {
