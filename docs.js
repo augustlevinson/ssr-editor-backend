@@ -89,6 +89,7 @@ const docs = {
                 owner: new ObjectId(`${addOwner}`),
                 invited: [],
                 collaborators: [],
+                comments: [],
                 content: addContent,
                 created: addCreated,
                 updated: addCreated,
@@ -161,12 +162,36 @@ const docs = {
     editOne: async function editOne(body) {
         let db = await getDb(colName);
 
-        // const filter = { _id: new ObjectId(`${body._id}`) };
         const filter = { doc_id: body.doc_id };
         const updatedContent = {
             title: body.title,
             content: body.content,
             updated: new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }),
+        };
+
+        try {
+            return await db.collection.updateOne(filter, { $set: updatedContent });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+    
+    commentOne: async function commentOne(body) {
+        let db = await getDb(colName);
+        const document = await db.collection.findOne({ doc_id: body.doc_id });
+        let newComment = {
+            id: body.comment_id,
+            content: body.content
+        }
+        const comments = document.comments
+        comments.push(newComment)
+
+        const filter = { doc_id: body.doc_id };
+        const updatedContent = {
+            ...document,
+            comments: comments
         };
 
         try {
