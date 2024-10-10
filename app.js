@@ -49,7 +49,7 @@ io.on("connection", function (socket) {
 
         clearTimeout(throttle);
         throttle = setTimeout( async () => {
-            await documents.editOne({ doc_id, title, content })
+            await documents.editOne({ doc_id, title, content, comments })
             console.log(`Document ${doc_id} updated in db`);
             const doc = await documents.getOne(doc_id);
             console.log(`Title: ${doc.title}`);
@@ -101,7 +101,14 @@ app.put("/edit", async (req, res) => {
 });
 
 app.put("/comment/add", async (req, res) => {
-    return res.json({ doc: await documents.commentOne(req.body) });
+    const doc = await documents.commentOne(req.body);
+    console.log(`/comment/add doc ${doc}`);
+    console.log(`/comment/add doc_id ${doc.doc_id}`);
+    console.log(`/comment/add comments ${doc.comments}`);
+    if (doc != null) {
+        io.to(doc.doc_id).emit('update', doc);
+    }
+    return res.json({ doc });
 });
 
 app.get("/docs/:id", async (req, res) => {

@@ -195,7 +195,8 @@ const docs = {
         };
 
         try {
-            return await db.collection.updateOne(filter, { $set: updatedContent });
+            await db.collection.updateOne(filter, { $set: updatedContent });
+            return await db.collection.findOne({ doc_id: body.doc_id });
         } catch (e) {
             console.error(e);
         } finally {
