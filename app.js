@@ -42,7 +42,6 @@ io.on("connection", function (socket) {
     let throttle;
     socket.on("update", async (documentData) => {
         const { doc_id, title, content, comments } = documentData;
-        console.log(`BACKEND documentData ${documentData.comments}`);
         console.log(`Received update for doc_id ${doc_id}`);
 
         io.to(doc_id).emit('update', { doc_id, title, content, comments });
@@ -51,8 +50,7 @@ io.on("connection", function (socket) {
         throttle = setTimeout( async () => {
             await documents.editOne({ doc_id, title, content, comments })
             console.log(`Document ${doc_id} updated in db`);
-            const doc = await documents.getOne(doc_id);
-            console.log(`Title: ${doc.title}`);
+            await documents.getOne(doc_id);
         }, 2000);
     });
 
@@ -101,10 +99,23 @@ app.put("/edit", async (req, res) => {
 });
 
 app.put("/comment/add", async (req, res) => {
-    const doc = await documents.commentOne(req.body);
-    console.log(`/comment/add doc ${doc}`);
-    console.log(`/comment/add doc_id ${doc.doc_id}`);
-    console.log(`/comment/add comments ${doc.comments}`);
+    let userCookie;
+    if (req.cookies.user) {
+        userCookie = JSON.parse(req.cookies.user);
+    }
+    const details = {
+        ...req.body, 
+        user: userCookie.email
+    }
+    const doc = await documents.commentOne(details);
+    if (doc != null) {
+        io.to(doc.doc_id).emit('update', doc);
+    }
+    return res.json({ doc });
+});
+
+app.put("/comment/delete", async (req, res) => {
+    const doc = await documents.deleteComment(req.body);
     if (doc != null) {
         io.to(doc.doc_id).emit('update', doc);
     }

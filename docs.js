@@ -183,7 +183,9 @@ const docs = {
         const document = await db.collection.findOne({ doc_id: body.doc_id });
         let newComment = {
             id: body.comment_id,
-            content: body.content
+            content: body.content,
+            user: body.user,
+            created: new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }),
         }
         const comments = document.comments
         comments.push(newComment)
@@ -192,6 +194,30 @@ const docs = {
         const updatedContent = {
             ...document,
             comments: comments
+        };
+
+        try {
+            await db.collection.updateOne(filter, { $set: updatedContent });
+            return await db.collection.findOne({ doc_id: body.doc_id });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    deleteComment: async function deleteComment(body) {       
+        let db = await getDb(colName);
+        const document = await db.collection.findOne({ doc_id: body.doc_id });
+        const comments = document.comments
+        const comment_id = parseInt(body.comment_id)
+
+        const updatedComments = comments.filter(comment => comment.id !== comment_id)
+
+        const filter = { doc_id: body.doc_id };
+        const updatedContent = {
+            ...document,
+            comments: updatedComments
         };
 
         try {
