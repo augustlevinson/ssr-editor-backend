@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const getDb = require("./db/database.js");
-const auth = require("./auth.js")
+const auth = require("./auth.js");
 const colName = "entries";
 
 let setupContent = require("./db/setupContent.json");
@@ -50,9 +50,8 @@ const docs = {
 
     getCollaboratorByEmail: async function getCollaboratorByEmail(email) {
         let db = await getDb(colName);
-        
-        const user = await auth.getOne(email);
 
+        const user = await auth.getOne(email);
 
         try {
             const response = await db.collection.find({ collaborators: user._id }).toArray();
@@ -177,7 +176,7 @@ const docs = {
             await db.client.close();
         }
     },
-    
+
     commentOne: async function commentOne(body) {
         let db = await getDb(colName);
         const document = await db.collection.findOne({ doc_id: body.doc_id });
@@ -186,14 +185,14 @@ const docs = {
             content: body.content,
             user: body.user,
             created: new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }),
-        }
-        const comments = document.comments
-        comments.push(newComment)
+        };
+        const comments = document.comments;
+        comments.push(newComment);
 
         const filter = { doc_id: body.doc_id };
         const updatedContent = {
             ...document,
-            comments: comments
+            comments: comments,
         };
 
         try {
@@ -206,18 +205,25 @@ const docs = {
         }
     },
 
-    deleteComment: async function deleteComment(body) {       
+    deleteComment: async function deleteComment(body) {
         let db = await getDb(colName);
         const document = await db.collection.findOne({ doc_id: body.doc_id });
-        const comments = document.comments
-        const comment_id = parseInt(body.comment_id)
+        const comments = document.comments;
+        const comment_id = parseInt(body.comment_id);
+        let commentedContent = document.content;
 
-        const updatedComments = comments.filter(comment => comment.id !== comment_id)
+        let regex = new RegExp(`<span[^>]*id="comment-${comment_id}"[^>]*>(.*?)<\/span>`, "g");
+
+        // Replacea kommentaren med det som är innanför span-taggarna
+        let uncommentedContent = commentedContent.replace(regex, "$1");
+
+        const updatedComments = comments.filter((comment) => comment.id !== comment_id);
 
         const filter = { doc_id: body.doc_id };
         const updatedContent = {
             ...document,
-            comments: updatedComments
+            content: uncommentedContent,
+            comments: updatedComments,
         };
 
         try {
