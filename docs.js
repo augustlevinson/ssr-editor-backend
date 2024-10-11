@@ -209,7 +209,7 @@ const docs = {
         let db = await getDb(colName);
         const document = await db.collection.findOne({ doc_id: body.doc_id });
         const comments = document.comments;
-        const comment_id = parseInt(body.comment_id);
+        const comment_id = body.comment_id;
         let commentedContent = document.content;
 
         let regex = new RegExp(`<span[^>]*id="comment-${comment_id}"[^>]*>(.*?)<\/span>`, "g");
