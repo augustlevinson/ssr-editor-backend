@@ -26,3 +26,8 @@ Funktionalitet
 - Lista för att se vilka som kan delas med? (Emil nämnde under föreläsning)
     Här skulle man kunna lägga till att användaren, i sin profil, 
     kan välja att ha en publik profil (finns i listan), eller icke-publik (inte i listan).
+
+- lägg in spärr så att en inbjudan bara kan skickas en gång per dokument och användare 
+    (så att användaren bara kan finnas i "invited" en gång)
+
+- sockets till output i code mode 
