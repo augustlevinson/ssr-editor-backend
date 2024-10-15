@@ -40,10 +40,10 @@ const auth = {
         return { success, jwtToken, reason };
     },
 
-    validateToken: async function validateToken(userCookie) {
+    validateToken: async function validateToken(user) {
         let success;
 
-        const token = userCookie.token;
+        const token = user.token;
 
         if (!token) {
             success = false

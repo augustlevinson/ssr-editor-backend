@@ -21,6 +21,7 @@ const docs = {
     },
 
     getAllByUserId: async function getAllByUserId(userId) {
+        console.log("inne i getAllByUserId")
         let db = await getDb(colName);
 
         try {
@@ -35,6 +36,7 @@ const docs = {
     },
 
     getInvitedByEmail: async function getInvitedByEmail(email) {
+        console.log("inne i getInvitedByEmail")
         let db = await getDb(colName);
 
         try {

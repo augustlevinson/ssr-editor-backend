@@ -7,7 +7,6 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const morgan = require("morgan");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
 
 const documents = require("./docs.js");
 const auth = require("./auth.js");
@@ -63,7 +62,7 @@ app.use(
     cors({
         origin: true,
         credentials: true,
-        allowedHeaders: "Content-Type,Authorization",
+        allowedHeaders: "Content-Type,Authorization,Session-Variable",
     })
 );
 
@@ -81,15 +80,23 @@ if (process.env.NODE_ENV !== "test") {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+app.use((req, res, next) => {
+    console.log('sätt req.user')
+    req.user = req.headers['session-variable'];
+    console.log(`req.user ${req.user}`)
+    console.log(`req.headers (stringify) ${JSON.stringify(req.headers)}`)
+    console.log(`req.headers.user ${req.headers.user}`)
+    next();
+});
 
 app.get("/add/:type", async (req, res) => {
     const type = req.params.type;
-    let userCookie;
+    let storedUser;
     let user;
-    if (req.cookies.user) {
-        userCookie = JSON.parse(req.cookies.user);
-        user = await auth.getOne(userCookie.email);
+    if (req.user) {
+        storedUser = JSON.parse(req.user);
+        user = await auth.getOne(storedUser.email);
     }
     return res.json({ new_id: await documents.addOne("Namnlöst dokument", "", user._id, type) });
 });
@@ -99,13 +106,13 @@ app.put("/edit", async (req, res) => {
 });
 
 app.put("/comment/add", async (req, res) => {
-    let userCookie;
-    if (req.cookies.user) {
-        userCookie = JSON.parse(req.cookies.user);
+    let storedUser;
+    if (req.user) {
+        storedUser = JSON.parse(req.user);
     }
     const details = {
         ...req.body, 
-        user: userCookie.email
+        user: storedUser.email
     }
     const doc = await documents.commentOne(details);
     if (doc != null) {
@@ -131,17 +138,24 @@ app.get("/docs/:id", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
+    console.log(`req.user: ${req.user}`)
     let validate = false;
-    let userCookie;
-    if (req.cookies.user) {
-        userCookie = JSON.parse(req.cookies.user);
-        validate = await auth.validateToken(userCookie);
+    let storedUser;
+    if (req.user) {
+        storedUser = JSON.parse(req.user);
+        console.log(`storedUser: ${storedUser}`)
+        validate = await auth.validateToken(storedUser);
     }
     if (validate) {
-        const user = await auth.getOne(userCookie.email);
-        return res.json({ docs: await documents.getAllByUserId(user._id) });
+        const user = await auth.getOne(storedUser.email);
+        console.log(`user: ${user}`)
+        console.log(`user._id: ${user._id}`)
+        const docs = await documents.getAllByUserId(user._id)
+        console.log(`docs: ${docs}`)
+        return res.json({ docs: docs });
+    } else {
+        return res.json({ docs: "unauthenticated" });
     }
-    return res.json({ docs: "unauthenticated" });
 });
 
 app.get("/all", async (req, res) => {
@@ -151,23 +165,23 @@ app.get("/all", async (req, res) => {
 app.get("/role/:role", async (req, res) => {
     const role = req.params.role;
 
-    let userCookie;
-    if (req.cookies.user) {
-        userCookie = JSON.parse(req.cookies.user);
+    let storedUser;
+    if (req.user) {
+        storedUser = JSON.parse(req.user);
         if (role === "invited") {
-            return res.json({ docs: await documents.getInvitedByEmail(userCookie.email) });
+            return res.json({ docs: await documents.getInvitedByEmail(storedUser.email) });
         } else if (role === "collaborator") {
-            return res.json({ docs: await documents.getCollaboratorByEmail(userCookie.email) });
+            return res.json({ docs: await documents.getCollaboratorByEmail(storedUser.email) });
         }
     }
 });
 
 app.get("/accept/:id", async (req, res) => {
-    let userCookie;
-    if (req.cookies.user) {
-        userCookie = JSON.parse(req.cookies.user);
+    let storedUser;
+    if (req.user) {
+        storedUser = JSON.parse(req.user);
     }
-    const details = { email: userCookie.email, docId: req.params.id };
+    const details = { email: storedUser.email, docId: req.params.id };
     return res.json({ accepted: await documents.acceptInvitation(details) });
 });
 
