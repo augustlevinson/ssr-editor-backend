@@ -3,6 +3,7 @@
         "title": "Hemligt dokument 1",
         "content": "Det här är ett hemligt dokument som bara vi får läsa.",
         "type": "text",
+        "collaborators": [],
         "invited": ["t@t.se"]
     },
     {

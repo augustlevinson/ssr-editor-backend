@@ -21,11 +21,11 @@ const docs = {
     },
 
     getAllByUserId: async function getAllByUserId(userId) {
-        console.log("inne i getAllByUserId")
         let db = await getDb(colName);
 
         try {
-            return await db.collection.find({ owner: userId }).toArray();
+            const docs = await db.collection.find({ owner: userId }).toArray();
+            return docs
         } catch (e) {
             console.error(e);
 
@@ -36,11 +36,11 @@ const docs = {
     },
 
     getInvitedByEmail: async function getInvitedByEmail(email) {
-        console.log("inne i getInvitedByEmail")
         let db = await getDb(colName);
 
         try {
-            return await db.collection.find({ invited: email }).toArray();
+            const docs = await db.collection.find({ invited: email }).toArray();
+            return docs
         } catch (e) {
             console.error(e);
 
@@ -135,19 +135,20 @@ const docs = {
 
     acceptInvitation: async function acceptInvitation(details) {
         let db = await getDb(colName);
-
         const document = await db.collection.findOne({ doc_id: details.docId });
 
         const user = await auth.getOne(details.email);
         const invited = document.invited;
         const collaborators = document.collaborators;
-        invited.pop(details.email);
+
+        const updatedInvite = invited.filter((invite) => invite !== details.email);
+
         collaborators.push(user._id);
 
         const filter = { _id: new ObjectId(`${document._id}`) };
         const updatedDocument = {
             ...document,
-            invited: invited,
+            invited: updatedInvite,
             collaborators: collaborators,
         };
 
