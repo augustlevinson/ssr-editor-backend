@@ -82,11 +82,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-    console.log('sätt req.user')
     req.user = req.headers['session-variable'];
-    console.log(`req.user ${req.user}`)
-    console.log(`req.headers (stringify) ${JSON.stringify(req.headers)}`)
-    console.log(`req.headers.user ${req.headers.user}`)
     next();
 });
 
@@ -138,20 +134,15 @@ app.get("/docs/:id", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-    console.log(`req.user: ${req.user}`)
     let validate = false;
     let storedUser;
     if (req.user) {
         storedUser = JSON.parse(req.user);
-        console.log(`storedUser: ${storedUser}`)
         validate = await auth.validateToken(storedUser);
     }
     if (validate) {
         const user = await auth.getOne(storedUser.email);
-        console.log(`user: ${user}`)
-        console.log(`user._id: ${user._id}`)
         const docs = await documents.getAllByUserId(user._id)
-        console.log(`docs: ${docs}`)
         return res.json({ docs: docs });
     } else {
         return res.json({ docs: "unauthenticated" });
