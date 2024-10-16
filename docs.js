@@ -114,23 +114,29 @@ const docs = {
     addInvite: async function addInvite(body) {
         let db = await getDb(colName);
 
-        const document = await db.collection.findOne({ _id: new ObjectId(`${body.docId}`) });
+        const document = await db.collection.findOne({ doc_id: body.doc_id });
         const invited = document.invited;
-        invited.push(body.recipient);
 
-        const filter = { _id: new ObjectId(`${body.docId}`) };
-        const updatedDocument = {
-            ...document,
-            invited: invited,
-        };
-
-        try {
-            return await db.collection.updateOne(filter, { $set: updatedDocument });
-        } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
+        if (invited.includes(body.recipient)) {
+            return "already invited"
+        } else {
+            invited.push(body.recipient);
+    
+            const filter = { doc_id: body.doc_id };
+            const updatedDocument = {
+                ...document,
+                invited: invited,
+            };
+    
+            try {
+                return await db.collection.updateOne(filter, { $set: updatedDocument });
+            } catch (e) {
+                console.error(e);
+            } finally {
+                await db.client.close();
+            }
         }
+
     },
 
     acceptInvitation: async function acceptInvitation(details) {
