@@ -210,8 +210,18 @@ app.get("/users/:user", async (req, res) => {
 });
 
 app.post("/send", async (req, res) => {
-    await documents.addInvite(req.body);
-    return await mail.sendEmail(req.body);
+    const response = await documents.addInvite(req.body);
+    if (response !== "already invited") {
+        const document = await documents.getOne(req.body.doc_id)
+        const body = {
+            ...req.body,
+            title: document.title
+        }
+        return await mail.sendEmail(body);
+    } else {
+        console.log(response);
+        return
+    }
 });
 
 const server = httpServer.listen(port, () => {

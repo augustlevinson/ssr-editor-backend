@@ -23,9 +23,7 @@ Funktionalitet
 - Lista för att se vilka som kan delas med? (Emil nämnde under föreläsning)
     Här skulle man kunna lägga till att användaren, i sin profil, 
     kan välja att ha en publik profil (finns i listan), eller icke-publik (inte i listan).
-
-- lägg in spärr så att en inbjudan bara kan skickas en gång per dokument och användare
-    (så att användaren bara kan finnas i "invited" en gång)
+- Lägg till mer respons när invite går igenom.
 - Logga in finns bara som utloggad och Logga ut bara som inloggad
 - Inloggadstatus ska uppdateras reacty
 - Någon form av spinner/load bar under hämtning av dokument
@@ -36,6 +34,7 @@ Funktionalitet
 - Implementera GraphQL
 - Verifiera mejladress? Typ skicka länk med SendGrid och när den klickas sätts user.verified: true
 - Kräv selection i textrutan för kommentar?
+- Ändra landingpage om inga dokument finns för användaren
 
 Innan inlämning
 ---
