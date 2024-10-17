@@ -17,6 +17,13 @@ const clientUrl = require("./environment.js");
 const app = express();
 const httpServer = require("http").createServer(app);
 
+// GraphQL
+const { createHandler } = require('graphql-http/lib/use/express');
+const visual = true;
+const { GraphQLSchema } = require("graphql");  
+const RootQueryType = require("./graphql/root.js");
+const schema = new GraphQLSchema({ query: RootQueryType });
+
 const io = require("socket.io")(httpServer, {
     cors: {
         origin: clientUrl,
@@ -71,6 +78,11 @@ app.disable("x-powered-by");
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(process.cwd(), "public")));
+
+app.use('/graphql', createHandler({
+    schema: schema,
+    graphiql: visual, // ta bort i produktion (sätt till false eller så)
+}));
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== "test") {
