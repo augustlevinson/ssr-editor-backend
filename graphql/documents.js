@@ -3,8 +3,6 @@ const {
     GraphQLString,
     GraphQLID,
     GraphQLList,
-    GraphQLInt,
-    GraphQLFloat,
     GraphQLNonNull,
 } = require("graphql");
 
@@ -31,7 +29,7 @@ const DocumentType = new GraphQLObjectType({
             description: "Document type."
         },
         owner: { 
-            type: new GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: "The owner of the document."
         },
         invited: {
