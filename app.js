@@ -17,6 +17,14 @@ const clientUrl = require("./environment.js");
 const app = express();
 const httpServer = require("http").createServer(app);
 
+// GraphQL
+const visual = true;
+const { graphqlHTTP } = require('express-graphql');
+const { GraphQLSchema } = require("graphql");
+const RootQueryType = require("./graphql/root.js");
+
+const schema = new GraphQLSchema({ query: RootQueryType });
+
 const io = require("socket.io")(httpServer, {
     cors: {
         origin: clientUrl,
@@ -61,16 +69,18 @@ io.on("connection", function (socket) {
 app.use(
     cors({
         origin: true,
-        credentials: true,
         allowedHeaders: "Content-Type,Authorization,Session-Variable",
     })
 );
 
 app.disable("x-powered-by");
-
 app.set("view engine", "ejs");
-
 app.use(express.static(path.join(process.cwd(), "public")));
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    graphiql: visual // ta bort i produktion (sätt till false eller så)
+}));
 
 // don't show the log when it is test
 if (process.env.NODE_ENV !== "test") {
@@ -133,21 +143,21 @@ app.get("/docs/:id", async (req, res) => {
     return res.json({ doc });
 });
 
-app.get("/", async (req, res) => {
-    let validate = false;
-    let storedUser;
-    if (req.user) {
-        storedUser = JSON.parse(req.user);
-        validate = await auth.validateToken(storedUser);
-    }
-    if (validate) {
-        const user = await auth.getOne(storedUser.email);
-        const docs = await documents.getAllByUserId(user._id)
-        return res.json({ docs: docs });
-    } else {
-        return res.json({ docs: "unauthenticated" });
-    }
-});
+// app.get("/", async (req, res) => {
+//     let validate = false;
+//     let storedUser;
+//     if (req.user) {
+//         storedUser = JSON.parse(req.user);
+//         validate = await auth.validateToken(storedUser);
+//     }
+//     if (validate) {
+//         const user = await auth.getOne(storedUser.email);
+//         const docs = await documents.getAllByUserId(user._id)
+//         return res.json({ docs: docs });
+//     } else {
+//         return res.json({ docs: "unauthenticated" });
+//     }
+// });
 
 app.get("/all", async (req, res) => {
     return res.json({ docs: await documents.getAll() });
