@@ -39,9 +39,6 @@ io.on("connection", function (socket) {
         socket.join(documentId);
         console.log(`Socket ${socket.id} joined room ${documentId}`);
 
-        // när vi joinar hämtas dokumentet från databasen
-        // det är detta vi ser när vi öppnar dokumentet
-        // vi slipper även fördröjningar om vi gör så här
         const doc = await documents.getOne(documentId)
         socket.emit('enterDoc', doc);
     });
@@ -143,22 +140,6 @@ app.get("/docs/:id", async (req, res) => {
     return res.json({ doc });
 });
 
-// app.get("/", async (req, res) => {
-//     let validate = false;
-//     let storedUser;
-//     if (req.user) {
-//         storedUser = JSON.parse(req.user);
-//         validate = await auth.validateToken(storedUser);
-//     }
-//     if (validate) {
-//         const user = await auth.getOne(storedUser.email);
-//         const docs = await documents.getAllByUserId(user._id)
-//         return res.json({ docs: docs });
-//     } else {
-//         return res.json({ docs: "unauthenticated" });
-//     }
-// });
-
 app.get("/all", async (req, res) => {
     return res.json({ docs: await documents.getAll() });
 });
@@ -238,4 +219,4 @@ const server = httpServer.listen(port, () => {
     console.log(`SSR Editor running port ${port}`);
 });
 
-module.exports = { app, server };
+module.exports = { app, server, io };

@@ -40,3 +40,4 @@ Innan inlämning
 ---
 - Ta bort "Återställ databas"
 - Ta bort console.log:ar
+- Ta bort app.get("/all")
