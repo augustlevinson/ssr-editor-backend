@@ -18,22 +18,23 @@ Design
 
 Funktionalitet
 ---
+- Logga in finns bara som utloggad och Logga ut bara som inloggad
+- Se till att invited och collaborator hinner uppdateras innan render (inga dubletter)
+- Lägg till mer respons när invite går igenom.
+- Inloggadstatus ska uppdateras reacty
+- Hantera (fixa stöd eller ta bort) kodförslagsdropdown i kodeditorn
+- Hantera åäö i kodeditorn (å blir idag e t. ex.)
+- Raderaknapp finns bara tillgänglig hos ägaren - flytta till document bar
+- Alert innan radering
+- /add/:id ska vara en PUT-route
+
+- Någon form av spinner/load bar under hämtning av dokument
 - Kommentera med CTRL+SHIFT+C/CMD+SHIFT+C?
 - Lägg ev till "profilsida" där användaren kan byta lösenord/ta bort konto etc.
 - Lista för att se vilka som kan delas med? (Emil nämnde under föreläsning)
     Här skulle man kunna lägga till att användaren, i sin profil, 
     kan välja att ha en publik profil (finns i listan), eller icke-publik (inte i listan).
-- Lägg till mer respons när invite går igenom.
-- Logga in finns bara som utloggad och Logga ut bara som inloggad
-- Inloggadstatus ska uppdateras reacty
-- Någon form av spinner/load bar under hämtning av dokument
-- Hantera (fixa stöd eller ta bort) kodförslagsdropdown i kodeditorn
-- Hantera åäö i kodeditorn (å blir idag e t. ex.)
-- Raderaknapp finns bara tillgänglig hos ägaren - flytta till document bar
-- Alert innan radering
-- Implementera GraphQL
 - Verifiera mejladress? Typ skicka länk med SendGrid och när den klickas sätts user.verified: true
-- Kräv selection i textrutan för kommentar?
 - Ändra landingpage om inga dokument finns för användaren
 
 Innan inlämning
