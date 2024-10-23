@@ -80,21 +80,21 @@ const docs = {
         }
     },
 
-    addOne: async function addOne(addTitle, addContent, addOwner, addType) {
+    addOne: async function addOne(details) {
         let db = await getDb(colName);
         let addCreated = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" });
         let updatedContent;
         try {
             await db.collection.insertOne({
-                title: addTitle,
-                owner: new ObjectId(`${addOwner}`),
+                title: details.title,
+                owner: new ObjectId(`${details.owner}`),
                 invited: [],
                 collaborators: [],
                 comments: [],
-                content: addContent,
+                content: details.content,
                 created: addCreated,
                 updated: addCreated,
-                type: addType,
+                type: details.type,
             });
             const addDoc = await db.collection.findOne({ created: addCreated });
             const filter = { _id: new ObjectId(`${addDoc._id}`) };

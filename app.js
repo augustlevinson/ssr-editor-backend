@@ -93,15 +93,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/add/:type", async (req, res) => {
-    const type = req.params.type;
-    let storedUser;
-    let user;
-    if (req.user) {
-        storedUser = JSON.parse(req.user);
-        user = await auth.getOne(storedUser.email);
+app.put("/add/:type", async (req, res) => {
+    const body = req.body
+    const user = await auth.getOne(body.email);
+    const details = {
+        ...body,
+        owner: user._id
     }
-    return res.json({ new_id: await documents.addOne("Namnlöst dokument", "", user._id, type) });
+
+    return res.json({ new_id: await documents.addOne(details) });
 });
 
 app.put("/edit", async (req, res) => {
