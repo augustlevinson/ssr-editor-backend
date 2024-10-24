@@ -10,7 +10,8 @@ Design
 - landing page?
 <!-- - översyn font-family, samma överallt -->
 - Flytta formateringsknapparna, kommentarsknappen och inbjudanknapp till document bar. Ta fram inputfält vid klick
-- Flytta "Kör"-knappen och inbjudanknapp till document bar
+<!-- - Flytta "Kör"-knappen och inbjudanknapp till document bar -->
+- Styling på körknappen (code mode)
 <!-- - Styling på outputelementet: färg, padding, margin-right -->
 - Lägg till About i footer
 <!-- - Flytta styling från footerkomponenten till CSS-filen -->
@@ -19,8 +20,8 @@ Design
 Funktionalitet
 ---
 <!-- - Logga in finns bara som utloggad och Logga ut bara som inloggad -->
-- Se till att invited och collaborator hinner uppdateras innan render (inga dubletter)
-- Lägg till mer respons när invite går igenom.
+<!-- - Se till att invited och collaborator hinner uppdateras innan render (inga dubletter) -->
+<!-- - Lägg till mer respons när invite går igenom. -->
 <!-- - Inloggadstatus ska uppdateras reacty -->
 - Hantera (fixa stöd eller ta bort) kodförslagsdropdown i kodeditorn
 - Hantera åäö i kodeditorn (å blir idag e t. ex.)
