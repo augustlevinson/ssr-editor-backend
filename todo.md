@@ -9,7 +9,7 @@ Design
 <!-- - Styling för signup-formuläret -->
 - landing page?
 <!-- - översyn font-family, samma överallt -->
-- Flytta formateringsknapparna, kommentarsknappen och inbjudanknapp till document bar. Ta fram inputfält vid klick
+<!-- - Flytta formateringsknapparna, kommentarsknappen och inbjudanknapp till document bar. Ta fram inputfält vid klick -->
 <!-- - Flytta "Kör"-knappen och inbjudanknapp till document bar -->
 - Styling på körknappen (code mode)
 <!-- - Styling på outputelementet: färg, padding, margin-right -->
