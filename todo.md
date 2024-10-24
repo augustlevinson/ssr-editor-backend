@@ -6,12 +6,12 @@ Design
 - Formatering (lägg till heading)
 - Ordräknare
 - Lägg till inloggad-badge eller dylikt
-- Styling för signup-formuläret
+<!-- - Styling för signup-formuläret -->
 - landing page?
-- översyn font-family, samma överallt
+<!-- - översyn font-family, samma överallt -->
 - Flytta formateringsknapparna, kommentarsknappen och inbjudanknapp till document bar. Ta fram inputfält vid klick
 - Flytta "Kör"-knappen och inbjudanknapp till document bar
-- Styling på outputelementet: färg, padding, margin-right
+<!-- - Styling på outputelementet: färg, padding, margin-right -->
 - Lägg till About i footer
 <!-- - Flytta styling från footerkomponenten till CSS-filen -->
 
