@@ -145,12 +145,19 @@ const docs = {
 
         const user = await auth.getOne(details.email);
         const invited = document.invited;
-        const collaborators = document.collaborators;
+        let collaborators = document.collaborators;
 
         const updatedInvite = invited.filter((invite) => invite !== details.email);
 
         collaborators.push(user._id);
 
+        // behövs för att inte få dubletter då objectId
+        // inte kan jämföras 'rakt av'.
+        collaborators = collaborators
+            .map(id => id.toString())
+            .filter((id, index, self) => self.indexOf(id) === index)
+            .map(id => ObjectId.createFromHexString(id));
+        
         const filter = { _id: new ObjectId(`${document._id}`) };
         const updatedDocument = {
             ...document,
