@@ -1,8 +1,8 @@
 Design
 ---
 - Styling i shadowDOM?
-- Sortering på typ, namn osv
-- Listvy och ikonvy
+<!-- - Sortering på typ, namn osv -->
+<!-- - Listvy och ikonvy -->
 - Formatering (lägg till heading)
 - Ordräknare
 - Lägg till inloggad-badge eller dylikt
