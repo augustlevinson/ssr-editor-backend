@@ -30,7 +30,7 @@ Funktionalitet
 <!-- - /add/:id ska vara en PUT-route -->
 
 - Någon form av spinner/load bar under hämtning av dokument
-- Någon form av spinner/load bar i kodeditorn med koden exekveras, innan den visas upp i output.
+<!-- - Någon form av spinner/load bar i kodeditorn med koden exekveras, innan den visas upp i output. -->
 - Kommentera med CTRL+SHIFT+C/CMD+SHIFT+C?
 - Lägg ev till "profilsida" där användaren kan byta lösenord/ta bort konto etc.
 - Lista för att se vilka som kan delas med? (Emil nämnde under föreläsning)
