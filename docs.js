@@ -3,22 +3,20 @@ const getDb = require("./db/database.js");
 const auth = require("./auth.js");
 const colName = "entries";
 
-let setupContent = require("./db/setupContent.json");
-
 const docs = {
-    getAll: async function getAll() {
-        let db = await getDb(colName);
+    // getAll: async function getAll() {
+    //     let db = await getDb(colName);
 
-        try {
-            return await db.collection.find({}).toArray();
-        } catch (e) {
-            console.error(e);
+    //     try {
+    //         return await db.collection.find({}).toArray();
+    //     } catch (e) {
+    //         console.error(e);
 
-            return [];
-        } finally {
-            await db.client.close();
-        }
-    },
+    //         return [];
+    //     } finally {
+    //         await db.client.close();
+    //     }
+    // },
 
     getAllByUserId: async function getAllByUserId(userId) {
         let db = await getDb(colName);

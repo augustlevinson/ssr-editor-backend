@@ -95,19 +95,19 @@ const auth = {
 
 
 
-    getAll: async function getAll() {
-        let db = await getDb(colName);
+    // getAll: async function getAll() {
+    //     let db = await getDb(colName);
 
-        try {
-            return await db.collection.find({}).toArray();
-        } catch (e) {
-            console.error(e);
+    //     try {
+    //         return await db.collection.find({}).toArray();
+    //     } catch (e) {
+    //         console.error(e);
 
-                return [];
-            } finally {
-                await db.client.close();
-        }
-    },
+    //             return [];
+    //         } finally {
+    //             await db.client.close();
+    //     }
+    // },
 
     getOne: async function getOne(email) {
         let db = await getDb(colName);
@@ -133,32 +133,32 @@ const auth = {
         }
     },
 
-    editOne: async function editOne(body) {
-        let db = await getDb(colName);
+    // editOne: async function editOne(body) {
+    //     let db = await getDb(colName);
 
-        const user = await auth.getOne(body.email)
+    //     const user = await auth.getOne(body.email)
 
-        const filter = { _id: new ObjectId(`${user._id}`) };
-        const updatedContent = {
-            token: body.token
-        };
+    //     const filter = { _id: new ObjectId(`${user._id}`) };
+    //     const updatedContent = {
+    //         token: body.token
+    //     };
 
-        try {
-            return await db.collection.updateOne(
-                filter,
-                { $set: updatedContent }
-            );
-        } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
-        }
-    },
+    //     try {
+    //         return await db.collection.updateOne(
+    //             filter,
+    //             { $set: updatedContent }
+    //         );
+    //     } catch (e) {
+    //         console.error(e);
+    //     } finally {
+    //         await db.client.close();
+    //     }
+    // },
 
     deleteOne: async function deleteOne(id) {
         let db = await getDb(colName);
 
-        const filter = { user_id: id };
+        const filter = { _id: new ObjectId(`${id}`) };
 
         try {
             return await db.collection.deleteOne(

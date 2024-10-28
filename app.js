@@ -140,9 +140,9 @@ app.get("/docs/:id", async (req, res) => {
     return res.json({ doc });
 });
 
-app.get("/all", async (req, res) => {
-    return res.json({ docs: await documents.getAll() });
-});
+// app.get("/all", async (req, res) => {
+//     return res.json({ docs: await documents.getAll() });
+// });
 
 app.get("/role/:role", async (req, res) => {
     const role = req.params.role;
@@ -171,18 +171,18 @@ app.delete("/delete", async (req, res) => {
     return res.json({ deleted: await documents.deleteOne(req.body.id) });
 });
 
-app.get("/reset", async (req, res) => {
-    await documents.resetDb();
-    return res.redirect(`/`);
-});
+// app.get("/reset", async (req, res) => {
+//     await documents.resetDb();
+//     return res.redirect(`/`);
+// });
 
-app.get("/users/all", async (req, res) => {
-    return res.json({ users: await auth.getAll() });
-});
+// app.get("/users/all", async (req, res) => {
+//     return res.json({ users: await auth.getAll() });
+// });
 
-app.get("/users/clear", async (req, res) => {
-    return res.json({ users: await auth.clearDb() });
-});
+// app.get("/users/clear", async (req, res) => {
+//     return res.json({ users: await auth.clearDb() });
+// });
 
 app.post("/users/register", async (req, res) => {
     return res.json({ success: await auth.register(req.body) });
@@ -192,13 +192,13 @@ app.post("/users/login", async (req, res) => {
     return res.json(await auth.login(req.body));
 });
 
-app.post("/users/update", async (req, res) => {
-    return res.json(await auth.editOne(req.body));
-});
+// app.post("/users/update", async (req, res) => {
+//     return res.json(await auth.editOne(req.body));
+// });
 
-app.get("/users/:user", async (req, res) => {
-    return res.json({ user: await auth.getOne(req.params.user) });
-});
+// app.get("/users/:user", async (req, res) => {
+//     return res.json({ user: await auth.getOne(req.params.user) });
+// });
 
 app.post("/send", async (req, res) => {
     const response = await documents.addInvite(req.body);
