@@ -50,6 +50,19 @@ const mockDocument = async (docType) => {
     return { addedDoc, fetchedDoc }
 }
 
+const mockInvitedDocument = async () => {
+    const { addedDoc, fetchedDoc } = await mockDocument("text");
+
+    const requestBody = {
+        doc_id: addedDoc.body.new_id,
+        recipient: "invited@test.se"
+    };
+
+    await docs.addInvite(requestBody);
+    const invitedDoc = await request(app).get(`/docs/${addedDoc.body.new_id}`);
+    return { addedDoc, fetchedDoc, invitedDoc };
+}
+
 const deleteMockDocument = async (docId) => {
     await docs.deleteOne(docId)
 }
@@ -129,17 +142,64 @@ describe("API Endpoints", () => {
         });
     });
 
-    // describe("PUT /comment/add", () => {
-    //     it("/comment/add               should add a comment to a document", async () => {
+    describe("PUT /comment/add", () => {
+        it("/comment/add               should add a comment to a document", async () => {
+            const type = "text";
+            const { user } = await mockUser();
+            const { addedDoc, fetchedDoc } = await mockDocument(type);
 
-    //     });
-    // });
+            const requestBody = {
+                doc_id: addedDoc.body.new_id,
+                comment_id: 123,
+                content: "newComment",
+                user: user.email
+            }
+            await request(app).put("/comment/add").send(requestBody);
+            const resAfter = await request(app).get(`/docs/${addedDoc.body.new_id}`);
 
-    // describe("PUT /comment/delete", () => {
-    //     it("/comment/delete            should delete a comment from a document", async () => {
+            expect(fetchedDoc.body.doc.comments).toEqual([]);
+            expect(resAfter.body.doc.comments).toHaveLength(1);
+            expect(resAfter.body.doc.doc_id).toEqual(addedDoc.body.new_id);
+            expect(resAfter.body.doc.comments[0].id).toEqual(123);
+            expect(resAfter.body.doc.comments[0].content).toEqual("newComment");
+            expect(resAfter.body.doc.comments[0].user).toEqual(user.email);
 
-    //     });
-    // });
+            await deleteMockUser(user._id);
+            await deleteMockDocument(addedDoc.body.new_id);
+        });
+
+    });
+
+    describe("PUT /comment/delete", () => {
+        it("/comment/delete            should delete a comment from a document", async () => {
+            const type = "text";
+            const { user } = await mockUser();
+            const { addedDoc, fetchedDoc } = await mockDocument(type);
+
+            const requestBody = {
+                doc_id: addedDoc.body.new_id,
+                comment_id: 123,
+                content: "newComment",
+                user: user.email
+            }
+
+            const deleteBody = {
+                doc_id: addedDoc.body.new_id,
+                comment_id: 123,
+            }
+
+            const commentedDoc = await request(app).put("/comment/add").send(requestBody);
+            await request(app).put("/comment/delete").send(deleteBody);
+
+            const resAfter = await request(app).get(`/docs/${addedDoc.body.new_id}`);
+
+            expect(commentedDoc.body.doc.comments).toHaveLength(1);
+            expect(resAfter.body.doc.comments).toHaveLength(0);
+
+            await deleteMockUser(user._id);
+            await deleteMockDocument(addedDoc.body.new_id);
+        });
+    });
 
 
     // describe("POST /send", () => {
@@ -147,6 +207,26 @@ describe("API Endpoints", () => {
 
     //     });
     // });
+
+    describe("GET /role/:role", () => {
+        it("/role/invited              should check role", async () => {
+            // TESTAR INTE ROUTEN UTAN UNDERLIGGANDE METODER - FIXA?
+            const type = "text";
+            const { user } = await mockUser();
+            const { addedDoc, fetchedDoc, invitedDoc } = await mockInvitedDocument();
+
+            expect(fetchedDoc.body.doc.invited).toHaveLength(0);
+            expect(invitedDoc.body.doc.invited).toHaveLength(1);
+            expect(invitedDoc.body.doc.invited[0]).toEqual("invited@test.se");
+
+            await deleteMockUser(user._id);
+            await deleteMockDocument(addedDoc.body.new_id);
+        });
+
+        // it("/role/collaborator         should send invite to email", async () => {
+
+        // });
+    });
 
     describe("DELETE /delete", () => {
         it("/delete                    should delete given document", async () => {

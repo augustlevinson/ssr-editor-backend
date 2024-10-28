@@ -134,7 +134,6 @@ const docs = {
                 await db.client.close();
             }
         }
-
     },
 
     acceptInvitation: async function acceptInvitation(details) {
