@@ -269,24 +269,7 @@ const docs = {
     resetDb: async function resetDb() {
         let db = await getDb(colName);
 
-        setupContent = setupContent.map((doc) => ({
-            ...doc,
-            created: new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }),
-            updated: new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" }),
-        }));
-
         await db.collection.deleteMany();
-        await db.collection.insertMany(setupContent);
-
-        const content = await db.collection.find({}).toArray();
-        for (const doc in content) {
-            const filter = { _id: new ObjectId(`${content[doc]._id}`) };
-            const updatedContent = {
-                ...content[doc],
-                doc_id: filter._id.toString().slice(-6),
-            };
-            await db.collection.updateOne(filter, { $set: updatedContent });
-        }
 
         await db.client.close();
     },
