@@ -115,8 +115,9 @@ app.put("/comment/add", async (req, res) => {
     }
     const details = {
         ...req.body, 
-        user: storedUser.email
+        user: storedUser ? storedUser.email : req.body.user
     }
+
     const doc = await documents.commentOne(details);
     if (doc != null) {
         io.to(doc.doc_id).emit('update', doc);
