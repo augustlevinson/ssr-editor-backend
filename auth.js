@@ -93,30 +93,12 @@ const auth = {
         return success;
     },
 
-
-
-    // getAll: async function getAll() {
-    //     let db = await getDb(colName);
-
-    //     try {
-    //         return await db.collection.find({}).toArray();
-    //     } catch (e) {
-    //         console.error(e);
-
-    //             return [];
-    //         } finally {
-    //             await db.client.close();
-    //     }
-    // },
-
     getOne: async function getOne(email) {
         let db = await getDb(colName);
         try {
             return await db.collection.findOne({email: email})
         } catch (e) {
             console.error(e);
-
-            return {};
         } finally {
             await db.client.close();
         }
@@ -132,28 +114,6 @@ const auth = {
             await db.client.close();
         }
     },
-
-    // editOne: async function editOne(body) {
-    //     let db = await getDb(colName);
-
-    //     const user = await auth.getOne(body.email)
-
-    //     const filter = { _id: new ObjectId(`${user._id}`) };
-    //     const updatedContent = {
-    //         token: body.token
-    //     };
-
-    //     try {
-    //         return await db.collection.updateOne(
-    //             filter,
-    //             { $set: updatedContent }
-    //         );
-    //     } catch (e) {
-    //         console.error(e);
-    //     } finally {
-    //         await db.client.close();
-    //     }
-    // },
 
     deleteOne: async function deleteOne(id) {
         let db = await getDb(colName);
@@ -175,6 +135,7 @@ const auth = {
         let db = await getDb(colName);
         await db.collection.deleteMany();
         await db.client.close();
+        return "User database is now empty."
     }
 };
 

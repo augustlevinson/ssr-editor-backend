@@ -7,23 +7,23 @@ const mail = require("../mail");
 const sgMail = require('@sendgrid/mail')
 const socketClient = require("socket.io-client")
 
-// const fetchUrl = "http://localhost:1337";
+const fetchUrl = "http://localhost:1337";
 
 process.env.NODE_ENV = "test";
 
 jest.setTimeout(15000);
 jest.mock('@sendgrid/mail');
 
-// const fetchGraphQL = async (query) => {
-//     const response = await fetch(fetchUrl + "/graphql", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ query: query }),
-//     });
-//     return response.json();
-// };
+const fetchGraphQL = async (query) => {
+    const response = await fetch(fetchUrl + "/graphql", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: query }),
+    });
+    return response.json();
+};
 
 const mockUser = async (userEmail="test@test.se") => {
     const registerBody = {
@@ -56,8 +56,8 @@ const mockDocument = async (docType) => {
 }
 
 const mockInvitedDocument = async (mockedDoc) => {
-    addedDoc = mockedDoc.addedDoc;
-    fetchedDoc = mockedDoc.fetchedDoc;
+    const addedDoc = mockedDoc.addedDoc;
+    const fetchedDoc = mockedDoc.fetchedDoc;
 
     const requestBody = {
         doc_id: addedDoc.body.new_id,
@@ -97,6 +97,100 @@ const deleteMockDocument = async (docId) => {
 beforeEach(async () => {
     await docs.resetDb();
     jest.clearAllMocks();
+});
+
+describe("GraphQL queries", () => {
+    describe("docs", () => {
+        it("should return documents for logged in user", async () => {
+            const { user } = await mockUser();
+
+            const loginBody = {
+                email: "test@test.se",
+                password: "password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+            
+            const mock = {
+                token: login.body.jwtToken
+            }
+
+            const query = `{ docs
+            (email: "${user.email}", token: "${mock.token}")
+            { doc_id title type updated }
+        }`;
+
+        const res = await fetchGraphQL(query);
+        
+        expect(res.data.docs).toHaveLength(0);
+        
+        const newDoc = await mockDocument("text");
+        const resAfter = await fetchGraphQL(query);
+        expect(resAfter.data.docs).toHaveLength(1);
+        expect(resAfter.data.docs[0].doc_id).toEqual(newDoc.addedDoc.body.new_id);
+
+        await deleteMockUser(user._id);
+        await deleteMockDocument(newDoc.addedDoc.body.new_id);
+        });
+        
+        it("should return null for a user without a valid token", async () => {
+            const { user } = await mockUser();
+
+            const query = `{ docs(email: "") { doc_id title type updated } }`;
+
+            const res = await fetchGraphQL(query);
+            expect(res.data.docs).toEqual(null);
+
+            await deleteMockUser(user._id);
+        });
+    });
+
+    describe("invited", () => {
+        it("should return documents where user is invited", async () => {
+            const { user: owner } = await mockUser();
+            const { user: invitedUser } = await mockUser("invited@test.se");
+            const { addedDoc } = await mockDocument("text");
+            await docs.addInvite({ doc_id: addedDoc.body.new_id, recipient: invitedUser.email });
+
+            const loginBody = {
+                email: "test@test.se",
+                password: "password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+
+            const query = `{ invited(email: "${invitedUser.email}", token: "${login.body.jwtToken}") { doc_id title type updated owner } }`;
+
+            const invitedDoc = await fetchGraphQL(query);
+            expect(invitedDoc.data.invited).toHaveLength(1);
+            expect(invitedDoc.data.invited[0].doc_id).toEqual(addedDoc.body.new_id);
+        });
+    });
+
+    describe("collaborator", () => {
+        it("should return documents where user is a collaborator", async () => {
+            const { user: collaborator } = await mockUser("collaborator@test.se");
+            const { addedDoc } = await mockDocument("text");
+            await docs.addInvite({ doc_id: addedDoc.body.new_id, recipient: collaborator.email });
+
+            const acceptBody = {
+                docId: addedDoc.body.new_id,
+                email: collaborator.email
+            };
+            
+            await docs.acceptInvitation(acceptBody);
+
+            const loginBody = {
+                email: "collaborator@test.se",
+                password: "password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+
+            const query = `{ collaborator(email: "${collaborator.email}", token: "${login.body.jwtToken}") { doc_id title type updated owner } }`;
+
+            const collaboratorDoc = await fetchGraphQL(query);
+            expect(collaboratorDoc.data.collaborator).toHaveLength(1);
+            expect(collaboratorDoc.data.collaborator[0].doc_id).toEqual(addedDoc.body.new_id);
+        });
+    });
 });
 
 describe("API Endpoints", () => {
@@ -343,16 +437,31 @@ describe("API Endpoints", () => {
             deleteMockUser(user._id);
 
         });
+        
+        it("/users/register            should fail to register a new user, user exists", async () => {
+            const registerBodySuccess = {
+                email: "test@test.se",
+                password: "password",
+            };
+            
+            const registerBodyFail = {
+                email: "test@test.se",
+                password: "password",
+            };
+        
+            await request(app).post("/users/register").send(registerBodySuccess);
+            const failResponse = await request(app).post("/users/register").send(registerBodyFail);
+            expect(failResponse.body.success).toBeFalsy();
+        });
     });
 
     describe("POST /users/login", () => {
         it("/users/login               should authenticate a registered user", async () => {
-            const {  user } = await mockUser();
+            const { user } = await mockUser();
             const loginBody = {
                 email: "test@test.se",
                 password: "password",
             };
-
             const login = await request(app).post("/users/login").send(loginBody);
             
             expect(user).toBeDefined();
@@ -361,6 +470,88 @@ describe("API Endpoints", () => {
             expect(login.body.jwtToken).toHaveLength(159);
 
             await deleteMockUser(user._id);
+        });
+        
+        it("/users/login               should fail to authenticate an unregistered user", async () => {
+            const loginBody = {
+                email: "test@test.se",
+                password: "password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+           
+            expect(login.body.success).toBeFalsy();
+            expect(login.body.reason).toEqual("no user");
+        });
+        
+        it("/users/login               should fail to authenticate, wrong password", async () => {
+            const { user } = await mockUser();
+            const loginBody = {
+                email: "test@test.se",
+                password: "Password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+            
+            expect(login.body.success).toBeFalsy();
+            expect(login.body.reason).toEqual("wrong password");
+
+            await deleteMockUser(user._id);
+        });
+       
+        it("/users/login               should fail to authenticate, no password", async () => {
+            const { user } = await mockUser();
+            const loginBody = {
+                email: "test@test.se",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+            
+            expect(login.body.success).toBeFalsy();
+
+            await deleteMockUser(user._id);
+        });
+    });
+    
+    describe("validateToken", () => {
+        it("validateToken               should validate with success", async () => {
+            const { user } = await mockUser();
+
+            const loginBody = {
+                email: "test@test.se",
+                password: "password",
+            };
+            const login = await request(app).post("/users/login").send(loginBody);
+            
+            const mock = {
+                token: login.body.jwtToken
+            }
+
+            const success = await auth.validateToken(mock);
+            
+            expect(success).toBeTruthy();
+
+            await deleteMockUser(user._id);
+        });
+        
+        it("validateToken               should fail to validate with faulty token", async () => {           
+            const mock = {
+                token: "no token"
+            }
+            const success = await auth.validateToken(mock);
+            
+            expect(success).toBeFalsy();
+        });
+        
+        it("validateToken               should fail to validate with no token", async () => {           
+            const mock = {}
+            const success = await auth.validateToken(mock);
+            
+            expect(success).toBeFalsy();
+        });
+    });
+
+    describe("Clear user database", () => {
+        it("clearDb                     should clearDb with success", async () => {
+            const response = await auth.clearDb();            
+            expect(response).toEqual("User database is now empty.");
         });
     });
 
@@ -426,7 +617,6 @@ describe("API Endpoints", () => {
             await deleteMockDocument(addedDoc.body.new_id);
         });
     });
-
 });
 
 afterAll(() => {
