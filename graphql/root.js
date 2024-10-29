@@ -48,7 +48,7 @@ const RootQueryType = new GraphQLObjectType({
         },
         collaborator: {
             type: new GraphQLList(DocumentType),
-            description: 'List of documents where given user is invited.',
+            description: 'List of documents where given user is collaborator.',
             args: {
                 email: { type: GraphQLString },
                 token: { type: GraphQLString }
@@ -62,23 +62,23 @@ const RootQueryType = new GraphQLObjectType({
                 }
             }
         },
-        users: {
-            type: new GraphQLList(DocumentType),
-            description: 'User credentials.',
-            args: {
-                email: { type: GraphQLString },
-                token: { type: GraphQLString }
-            },
-            resolve: async (parent, args) => {
-                const validate = await auth.validateToken(args);
-                if (validate) {
-                    const getUser = await auth.getOne(args.email);
-                    return getUser; // Assuming you want to return the user details
-                } else {
-                    return "unauthenticated";
-                }
-            }
-        }
+        // users: {
+        //     type: new GraphQLList(DocumentType),
+        //     description: 'User credentials.',
+        //     args: {
+        //         email: { type: GraphQLString },
+        //         token: { type: GraphQLString }
+        //     },
+        //     resolve: async (parent, args) => {
+        //         const validate = await auth.validateToken(args);
+        //         if (validate) {
+        //             const getUser = await auth.getOne(args.email);
+        //             return getUser; // Assuming you want to return the user details
+        //         } else {
+        //             return "unauthenticated";
+        //         }
+        //     }
+        // }
     })
 });
 

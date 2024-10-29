@@ -4,20 +4,6 @@ const auth = require("./auth.js");
 const colName = "entries";
 
 const docs = {
-    // getAll: async function getAll() {
-    //     let db = await getDb(colName);
-
-    //     try {
-    //         return await db.collection.find({}).toArray();
-    //     } catch (e) {
-    //         console.error(e);
-
-    //         return [];
-    //     } finally {
-    //         await db.client.close();
-    //     }
-    // },
-
     getAllByUserId: async function getAllByUserId(userId) {
         let db = await getDb(colName);
 
