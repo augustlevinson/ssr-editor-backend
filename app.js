@@ -1,6 +1,7 @@
 require("dotenv/config");
 
 const port = process.env.PORT || 1337;
+const NODE_ENV = process.env.NODE_ENV
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -18,7 +19,7 @@ const app = express();
 const httpServer = require("http").createServer(app);
 
 // GraphQL
-const visual = true;
+const visual = false;
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema } = require("graphql");
 const RootQueryType = require("./graphql/root.js");
@@ -79,8 +80,7 @@ app.use('/graphql', graphqlHTTP({
     graphiql: visual // ta bort i produktion (sätt till false eller så)
 }));
 
-// don't show the log when it is test
-if (process.env.NODE_ENV !== "test") {
+if (NODE_ENV !== "test") {
     // use morgan to log at command line
     app.use(morgan("combined")); // 'combined' outputs the Apache style LOGs
 }
@@ -145,19 +145,19 @@ app.get("/docs/:id", async (req, res) => {
 //     return res.json({ docs: await documents.getAll() });
 // });
 
-app.get("/role/:role", async (req, res) => {
-    const role = req.params.role;
+// app.get("/role/:role", async (req, res) => {
+//     const role = req.params.role;
 
-    let storedUser;
-    if (req.user) {
-        storedUser = JSON.parse(req.user);
-        if (role === "invited") {
-            return res.json({ docs: await documents.getInvitedByEmail(storedUser.email) });
-        } else if (role === "collaborator") {
-            return res.json({ docs: await documents.getCollaboratorByEmail(storedUser.email) });
-        }
-    }
-});
+//     let storedUser;
+//     if (req.user) {
+//         storedUser = JSON.parse(req.user);
+//         if (role === "invited") {
+//             return res.json({ docs: await documents.getInvitedByEmail(storedUser.email) });
+//         } else if (role === "collaborator") {
+//             return res.json({ docs: await documents.getCollaboratorByEmail(storedUser.email) });
+//         }
+//     }
+// });
 
 app.get("/accept/:id", async (req, res) => {
     let storedUser;
