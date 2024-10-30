@@ -1,19 +1,14 @@
 # SSR Editor
 
-_Starter project for DV1677 JSRamverk_
+_A real-time collaborative text editor web application. Built as part of the JSRamverk course at Blekinge Institute of Technology_
 
 
 
-Framework
+Tech stack
 ---
 
-In this project we have decided to choose React as our frontend framework.
+This project was built using MongoDB, Express, React and Node.js - also known as MERN.
 
-Getting started
----
-1. run `npm install`
-2. add a default port `1337`
-3. add a favicon to /public (prevents GET request in browser)
 
 
 ___

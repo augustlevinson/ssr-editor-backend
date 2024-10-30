@@ -5,10 +5,9 @@ const mail = {
         sgMail.setApiKey(process.env.SENDGRID_API_KEY)
         const msg = {
             to: body.recipient,
-            from: process.env.SENDGRID_SENDER, // vår verifierade sender
+            from: process.env.SENDGRID_SENDER,
             subject: `${body.sender} har bjudit in dig att redigera "${body.title}"`,
             text: 'and easy to do anywhere, even with Node.js',
-            // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
             html: `<p>Du har blivit inbjudan att redigera ${body.title} i SSR Editor.</p>
                     <a href="${body.url}">Acceptera inbjudan</a>
                     <p>Vänligen</p>
