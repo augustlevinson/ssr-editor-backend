@@ -69,27 +69,6 @@ const mockInvitedDocument = async (mockedDoc) => {
     return { addedDoc, fetchedDoc, invitedDoc };
 }
 
-// const mockCollaboratorDocument = async (mockedDoc) => {
-//     addedDoc = mockedDoc.addedDoc;
-//     fetchedDoc = mockedDoc.fetchedDoc;
-//     const inviteBody = {
-//         doc_id: addedDoc.body.new_id,
-//         recipient: "collaborator@test.se"
-//     };
-
-//     await docs.addInvite(inviteBody);
-
-//     const acceptBody = {
-//         docId: inviteBody.doc_id,
-//         email: inviteBody.recipient
-//     };
-
-//     await docs.acceptInvitation(acceptBody);
-
-//     const collaboratorDoc = await request(app).get(`/docs/${addedDoc.body.new_id}`);
-//     return { addedDoc, fetchedDoc, collaboratorDoc };
-// }
-
 const deleteMockDocument = async (docId) => {
     await docs.deleteOne(docId)
 }
@@ -566,8 +545,6 @@ describe("API Endpoints", () => {
         });
     
         afterEach((done) => {
-            // sätter timeout för att hinna få med
-            // throttle för sockets utan errors.
             setTimeout(() => {
                 done();
             }, 2500)

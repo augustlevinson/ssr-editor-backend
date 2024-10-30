@@ -73,7 +73,7 @@ const RootQueryType = new GraphQLObjectType({
         //         const validate = await auth.validateToken(args);
         //         if (validate) {
         //             const getUser = await auth.getOne(args.email);
-        //             return getUser; // Assuming you want to return the user details
+        //             return getUser;
         //         } else {
         //             return "unauthenticated";
         //         }
