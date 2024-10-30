@@ -9,10 +9,14 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  JWT_SECRET: "DUMMYSECRETFORTESTINGJWT12345678"
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
+
 
     strategy:
       matrix:

@@ -457,26 +457,24 @@ describe("API Endpoints", () => {
 
     describe("POST /users/login", () => {
         it("/users/login               should authenticate a registered user", async () => {
-            const { user } = await mockUser("login@login.se");
-            console.log(user)
+            const { user } = await mockUser();
             const loginBody = {
-                email: "login@login.se",
+                email: "test@test.se",
                 password: "password",
             };
             const login = await request(app).post("/users/login").send(loginBody);
-            console.log(login.body)
             
             expect(user).toBeDefined();
             expect(login.body.success).toBeTruthy();
             expect(login.body.jwtToken).toBeDefined();
-            expect(login.body.jwtToken).toHaveLength(161);
+            expect(login.body.jwtToken).toHaveLength(159);
 
             await deleteMockUser(user._id);
         });
         
         it("/users/login               should fail to authenticate an unregistered user", async () => {
             const loginBody = {
-                email: "fail@fail.se",
+                email: "test@test.se",
                 password: "password",
             };
             const login = await request(app).post("/users/login").send(loginBody);
